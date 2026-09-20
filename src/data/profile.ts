@@ -48,6 +48,18 @@ export interface Job {
 
 export const experience: Job[] = [
   {
+    period: 'ago 2026 — atual',
+    title: 'Fundador e Desenvolvedor',
+    org: '2 Pulos',
+    place: 'remoto',
+    href: '/projetos/2pulos/',
+    points: [
+      'Criei o estúdio e o site institucional do zero: identidade, textos e código em Next.js 16, TypeScript e Tailwind',
+      'Publiquei a landing em português e inglês, com tema claro e escuro e o contraste ajustado ao padrão WCAG AA',
+      'Montei a infraestrutura: deploy na Vercel, DNS e e-mail próprios, e subdomínio curinga com certificado para enviar uma prévia por cliente',
+    ],
+  },
+  {
     period: '2024 — atual',
     title: 'Co-fundador e Desenvolvedor (Dados e Produto)',
     org: 'E-Habilita',
