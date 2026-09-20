@@ -1,0 +1,107 @@
+---
+import Icon from './Icon.astro';
+import { nav, profile } from '../data/profile';
+
+const atual = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const ehAtivo = (href: string) => {
+  const alvo = href.replace(/\/+$/, '') || '/';
+  return alvo === '/' ? atual === '/' : atual === alvo || atual.startsWith(`${alvo}/`);
+};
+const ano = new Date().getFullYear();
+---
+
+<aside class="flex min-h-full w-64 flex-col bg-base-200">
+  <div class="px-6 pt-10 pb-7 text-center">
+    <div class="avatar avatar-placeholder mx-auto">
+      <div class="w-28 rounded-full bg-neutral text-neutral-content ring-1 ring-primary/50 ring-offset-4 ring-offset-base-200">
+        <span class="text-3xl font-semibold">{profile.initials}</span>
+      </div>
+    </div>
+    <p class="mt-5 text-lg leading-tight font-semibold">{profile.name}</p>
+  </div>
+
+  <nav aria-label="Menu principal">
+    <ul class="border-t border-base-300">
+      {
+        nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              aria-current={ehAtivo(item.href) ? 'page' : undefined}
+              class:list={[
+                'flex items-center gap-3 border-b border-base-300 pe-5 text-sm transition-colors',
+                ehAtivo(item.href) ? 'bg-base-300/50 text-brand' : 'text-muted hover:bg-base-300/30 hover:text-base-content',
+              ]}
+            >
+              <span
+                class:list={[
+                  'grid size-11 shrink-0 place-items-center transition-colors',
+                  ehAtivo(item.href) ? 'bg-primary text-primary-content' : 'text-muted',
+                ]}
+              >
+                <Icon name={item.icon} class="size-[1.125rem]" />
+              </span>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <div class="mt-auto px-6 py-7">
+    <div class="flex items-center gap-1">
+      <a
+        href={profile.github}
+        class="btn btn-ghost btn-square btn-sm"
+        aria-label="GitHub"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Icon name="github" class="size-[1.125rem]" />
+      </a>
+      <a
+        href={profile.linkedin}
+        class="btn btn-ghost btn-square btn-sm"
+        aria-label="LinkedIn"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Icon name="linkedin" class="size-[1.125rem]" />
+      </a>
+      <a href={`mailto:${profile.email}`} class="btn btn-ghost btn-square btn-sm" aria-label="Enviar e-mail">
+        <Icon name="mail" class="size-[1.125rem]" />
+      </a>
+      <label class="btn btn-ghost btn-square btn-sm" title="Alternar tema claro/escuro">
+        <span class="swap swap-rotate">
+          <input type="checkbox" data-theme-toggle aria-label="Usar tema claro" />
+          <Icon name="sun" class="swap-off size-[1.125rem]" />
+          <Icon name="moon" class="swap-on size-[1.125rem]" />
+        </span>
+        <span class="sr-only">Alternar tema claro ou escuro</span>
+      </label>
+    </div>
+
+    <p class="mt-4 border-t border-base-300 pt-4 text-xs leading-relaxed text-muted">
+      {ano} © copyright<br />Todos os direitos reservados.
+    </p>
+  </div>
+</aside>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const root = document.documentElement;
+
+    for (const toggle of document.querySelectorAll<HTMLInputElement>('[data-theme-toggle]')) {
+      // Marcado = tema claro ("papel"); desmarcado = tema escuro ("grafite")
+      toggle.checked = root.dataset.theme === 'papel';
+      toggle.addEventListener('change', () => {
+        const theme = toggle.checked ? 'papel' : 'grafite';
+        root.dataset.theme = theme;
+        try {
+          localStorage.setItem('tema', theme);
+        } catch {}
+      });
+    }
+  });
+</script>

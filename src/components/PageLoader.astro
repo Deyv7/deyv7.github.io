@@ -1,0 +1,157 @@
+---
+import brainLoading from '../assets/brain-loading.svg?raw';
+import { profile } from '../data/profile';
+---
+
+<div
+  id="page-loader"
+  class="abertura"
+  role="status"
+  aria-live="polite"
+  aria-label="Carregando página"
+  transition:persist="page-loader"
+  transition:animate="none"
+>
+  <div class="abertura-conteudo">
+    <div class="abertura-cerebro" set:html={brainLoading} />
+    <p class="abertura-nome">{profile.displayName}</p>
+    <p class="abertura-papel" data-loading-label>Carregando o portfólio</p>
+  </div>
+</div>
+
+<script>
+  import { nav } from '../data/profile';
+  import { loadingEvent } from '../lib/loading-state';
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let active = false;
+  let started = performance.now();
+  let revision = 0;
+  let timeout: number;
+  let closing: number;
+  let stopping: number;
+  let animationFrame: number;
+  let announcedBusy: boolean | undefined;
+  let tracks: { path: SVGPathElement; frames: string[]; duration: number; frame: number }[] = [];
+
+  const renderFrame = (now: number) => {
+    for (const track of tracks) {
+      // O carimbo do requestAnimationFrame pode ser anterior ao início da animação,
+      // o que gerava índice negativo e um 'd' inválido no <path>.
+      const decorrido = Math.max(0, now - started);
+      const duracao = track.duration > 0 ? track.duration : 2002;
+      const frame = reducedMotion.matches
+        ? 0
+        : Math.min(track.frames.length - 1, Math.floor(((decorrido % duracao) / duracao) * track.frames.length));
+      if (frame === track.frame) continue;
+      const d = track.frames[frame];
+      if (!d) continue;
+      track.path.setAttribute('d', d);
+      track.frame = frame;
+    }
+    if (!reducedMotion.matches) animationFrame = requestAnimationFrame(renderFrame);
+  };
+
+  const restartAnimation = () => {
+    cancelAnimationFrame(animationFrame);
+    // Reproduz os próprios quadros do arquivo, sem depender do relógio SMIL
+    // de um SVG que o ClientRouter remove e reinsere durante a navegação.
+    tracks = tracks.filter((track) => track.path.isConnected);
+    for (const animation of document.querySelectorAll('#page-loader animate[attributeName="d"]')) {
+      const path = animation.parentElement as unknown as SVGPathElement;
+      const frames = animation.getAttribute('values')?.split(';') ?? [];
+      if (frames.length) tracks.push({
+        path,
+        frames,
+        duration: parseFloat(animation.getAttribute('dur') ?? '2.002') * 1000,
+        frame: -1,
+      });
+      animation.remove();
+    }
+    renderFrame(performance.now());
+  };
+  const setBusy = (busy: boolean) => {
+    document.documentElement.toggleAttribute('data-loading', busy);
+    document.querySelector('#conteudo')?.setAttribute('aria-busy', String(busy));
+    if (announcedBusy !== busy) {
+      announcedBusy = busy;
+      document.dispatchEvent(new CustomEvent(loadingEvent, { detail: { active: busy } }));
+    }
+  };
+
+  const hide = () => {
+    active = false;
+    window.clearTimeout(timeout);
+    window.clearTimeout(closing);
+    setBusy(false);
+    const current = revision;
+    stopping = window.setTimeout(() => {
+      if (current === revision && !active) cancelAnimationFrame(animationFrame);
+    }, reducedMotion.matches ? 0 : 180);
+  };
+
+  const show = (pathname = location.pathname) => {
+    revision++;
+    window.clearTimeout(closing);
+    window.clearTimeout(timeout);
+    window.clearTimeout(stopping);
+    started = performance.now();
+    active = true;
+    const path = pathname.replace(/\/+$/, '') || '/';
+    const page = nav.find((item) => (item.href.replace(/\/+$/, '') || '/') === path);
+    const label = document.querySelector('[data-loading-label]');
+    if (label) label.textContent = page ? `Carregando ${page.label}` : 'Carregando projeto';
+    setBusy(true);
+    restartAnimation();
+    // Libera a interface mesmo se a navegação for interrompida ou falhar.
+    timeout = window.setTimeout(hide, 8000);
+    return revision;
+  };
+
+  const finish = () => {
+    const current = revision;
+    window.clearTimeout(closing);
+    const remaining = reducedMotion.matches ? 0 : Math.max(0, 450 - (performance.now() - started));
+    closing = window.setTimeout(() => {
+      if (current === revision) hide();
+    }, remaining);
+  };
+
+  document.addEventListener('astro:before-preparation', (event) => {
+    const current = show(event.to.pathname);
+    const originalLoader = event.loader;
+    event.signal.addEventListener('abort', () => {
+      if (current === revision) hide();
+    }, { once: true });
+    event.loader = async () => {
+      try {
+        await originalLoader();
+      } catch (error) {
+        if (current === revision) hide();
+        throw error;
+      }
+    };
+  });
+
+  document.addEventListener('astro:before-swap', (event) => {
+    // O próprio loader faz a transição; o snapshot nativo congela o SVG.
+    void event.viewTransition.ready.catch(() => {});
+    event.viewTransition.skipTransition();
+  });
+  document.addEventListener('astro:after-swap', () => {
+    setBusy(active);
+    if (active) restartAnimation();
+  });
+  document.addEventListener('astro:page-load', finish);
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) hide();
+  });
+  reducedMotion.addEventListener('change', () => {
+    if (active) restartAnimation();
+    else cancelAnimationFrame(animationFrame);
+  });
+
+  show();
+  if (document.readyState === 'complete') finish();
+  else window.addEventListener('load', finish, { once: true });
+</script>

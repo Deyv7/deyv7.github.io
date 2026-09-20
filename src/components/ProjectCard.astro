@@ -1,0 +1,63 @@
+---
+import { Image } from 'astro:assets';
+import ProjectCover from './ProjectCover.astro';
+import { categoryLabel, type Project } from '../lib/projects';
+import Icon from './Icon.astro';
+
+interface Props {
+  project: Project;
+  /** Posição na grade: as primeiras imagens carregam sem lazy, por aparecerem logo de cara */
+  index?: number;
+}
+
+const { project, index = 99 } = Astro.props;
+// As 3 primeiras (primeira fileira no desktop) carregam sem lazy; o resto entra sob demanda
+const prioritaria = index < 3;
+const d = project.data;
+const categorias = d.category.map((c) => categoryLabel[c]).join(' · ');
+---
+
+<a
+  href={`/projetos/${project.id}/`}
+  class="group block h-full overflow-hidden rounded-box border border-base-300 bg-base-200 transition-colors hover:border-primary/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+>
+  <div class="aspect-4/3 w-full overflow-hidden border-b border-base-300">
+    {
+      d.cover ? (
+        d.cover.format === 'svg' ? (
+          <img
+            src={d.cover.src}
+            alt=""
+            loading={prioritaria ? 'eager' : 'lazy'}
+            fetchpriority={index === 0 ? 'high' : 'auto'}
+            class="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+          />
+        ) : (
+          <Image
+            src={d.cover}
+            alt=""
+            class="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+            widths={[400, 700, 1000]}
+            sizes="(min-width: 1024px) 21rem, (min-width: 640px) 45vw, 92vw"
+            loading={prioritaria ? 'eager' : 'lazy'}
+            fetchpriority={index === 0 ? 'high' : 'auto'}
+          />
+        )
+      ) : (
+        <ProjectCover project={project} />
+      )
+    }
+  </div>
+
+  <div class="p-5">
+    <p class="text-xs font-semibold tracking-[0.12em] text-brand uppercase">
+      {categorias}
+    </p>
+    <div class="mt-2 flex items-start justify-between gap-4">
+      <h2 class="text-lg leading-snug font-semibold text-base-content" transition:name={`projeto-${project.id}`}>
+        {d.title}
+      </h2>
+      <Icon name="arrow-right" class="mt-1 size-4 shrink-0 -rotate-45 text-brand" />
+    </div>
+  </div>
+</a>

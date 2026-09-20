@@ -1,0 +1,19 @@
+---
+interface Props {
+  /** Palavra que fica dentro do quadrado colorido */
+  destaque: string;
+  /** Resto do título, fora do quadrado */
+  resto?: string;
+  subtitulo?: string;
+}
+
+const { destaque, resto, subtitulo } = Astro.props;
+---
+
+<header class="entrada mb-10" style="--i: 0">
+  <h1 class="flex flex-wrap items-center gap-x-3 text-3xl font-bold tracking-tight sm:text-4xl">
+    <span class="bg-primary px-3 py-2 text-primary-content">{destaque}</span>
+    {resto && <span>{resto}</span>}
+  </h1>
+  {subtitulo && <p class="mt-2 text-sm text-muted">{subtitulo}</p>}
+</header>

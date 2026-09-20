@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="seta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8a857c"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="1000" fill="#f6f4ef"/>
+  <text x="100" y="110" font-size="40" font-weight="600" fill="#22201c">Cobrança e conciliação automáticas</text>
+
+  <!-- Quando um Pix chega -->
+  <text x="100" y="190" font-size="21" font-weight="600" letter-spacing="2" fill="#6b6760">QUANDO UM PIX CHEGA</text>
+
+  <rect x="100" y="215" width="320" height="150" rx="22" fill="#fffdf9" stroke="#d9d4ca" stroke-width="2.5"/>
+  <text x="260" y="283" text-anchor="middle" font-size="30" font-weight="600" fill="#22201c">E-mail de Pix</text>
+  <text x="260" y="323" text-anchor="middle" font-size="21" fill="#6b6760">caixa do proprietário</text>
+
+  <line x1="428" y1="290" x2="472" y2="290" stroke="#8a857c" stroke-width="3.5" marker-end="url(#seta)"/>
+
+  <rect x="480" y="215" width="320" height="150" rx="22" fill="#fffdf9" stroke="#d9d4ca" stroke-width="2.5"/>
+  <text x="640" y="283" text-anchor="middle" font-size="30" font-weight="600" fill="#22201c">Listener IMAP</text>
+  <text x="640" y="323" text-anchor="middle" font-size="21" fill="#6b6760">só servidores permitidos</text>
+
+  <line x1="808" y1="290" x2="852" y2="290" stroke="#8a857c" stroke-width="3.5" marker-end="url(#seta)"/>
+
+  <rect x="860" y="215" width="320" height="150" rx="22" fill="#fffdf9" stroke="#d9d4ca" stroke-width="2.5"/>
+  <text x="1020" y="283" text-anchor="middle" font-size="30" font-weight="600" fill="#22201c">OpenAI</text>
+  <text x="1020" y="323" text-anchor="middle" font-size="21" fill="#6b6760">extrai remetente e valor</text>
+
+  <line x1="1188" y1="290" x2="1232" y2="290" stroke="#8a857c" stroke-width="3.5" marker-end="url(#seta)"/>
+
+  <rect x="1240" y="215" width="320" height="150" rx="22" fill="#22201c"/>
+  <text x="1400" y="283" text-anchor="middle" font-size="30" font-weight="600" fill="#f6f4ef">Conciliação</text>
+  <text x="1400" y="323" text-anchor="middle" font-size="21" fill="#bdb7ac">procura a cobrança</text>
+
+  <line x1="1440" y1="373" x2="1440" y2="440" stroke="#8a857c" stroke-width="3.5" marker-end="url(#seta)"/>
+  <path d="M1340 373 V 405 H 1020 V 440" fill="none" stroke="#8a857c" stroke-width="3.5" marker-end="url(#seta)"/>
+
+  <rect x="860" y="450" width="320" height="150" rx="22" fill="#e3efe8" stroke="#2f6b4f" stroke-width="2.5"/>
+  <text x="1020" y="518" text-anchor="middle" font-size="30" font-weight="600" fill="#1f4d38">Cobrança paga</text>
+  <text x="1020" y="558" text-anchor="middle" font-size="21" fill="#2f6b4f">recibo gerado</text>
+
+  <rect x="1240" y="450" width="320" height="150" rx="22" fill="#fbf1dc" stroke="#b7892f" stroke-width="2.5"/>
+  <text x="1400" y="518" text-anchor="middle" font-size="30" font-weight="600" fill="#6b4d12">Quarentena</text>
+  <text x="1400" y="558" text-anchor="middle" font-size="21" fill="#8a6418">revisão do proprietário</text>
+
+  <!-- Todo dia -->
+  <text x="100" y="700" font-size="21" font-weight="600" letter-spacing="2" fill="#6b6760">TODO DIA</text>
+
+  <rect x="100" y="725" width="320" height="150" rx="22" fill="#fffdf9" stroke="#d9d4ca" stroke-width="2.5"/>
+  <text x="260" y="793" text-anchor="middle" font-size="30" font-weight="600" fill="#22201c">Agendador</text>
+  <text x="260" y="833" text-anchor="middle" font-size="21" fill="#6b6760">node-cron</text>
+
+  <line x1="428" y1="800" x2="472" y2="800" stroke="#8a857c" stroke-width="3.5" marker-end="url(#seta)"/>
+
+  <rect x="480" y="725" width="320" height="150" rx="22" fill="#fffdf9" stroke="#d9d4ca" stroke-width="2.5"/>
+  <text x="640" y="793" text-anchor="middle" font-size="30" font-weight="600" fill="#22201c">Cria a cobrança</text>
+  <text x="640" y="833" text-anchor="middle" font-size="21" fill="#6b6760">aluguel + água e luz</text>
+
+  <line x1="808" y1="800" x2="852" y2="800" stroke="#8a857c" stroke-width="3.5" marker-end="url(#seta)"/>
+
+  <rect x="860" y="725" width="320" height="150" rx="22" fill="#fffdf9" stroke="#d9d4ca" stroke-width="2.5"/>
+  <text x="1020" y="793" text-anchor="middle" font-size="30" font-weight="600" fill="#22201c">Aviso no WhatsApp</text>
+  <text x="1020" y="833" text-anchor="middle" font-size="21" fill="#6b6760">multa e juros se vencer</text>
+</svg>

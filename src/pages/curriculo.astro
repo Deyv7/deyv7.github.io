@@ -1,0 +1,118 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import TituloSecao from '../components/TituloSecao.astro';
+import { certifications, education, experience, languages, profile, skills } from '../data/profile';
+
+const ano = (periodo: string) => periodo.match(/\d{4}/)?.[0] ?? '';
+---
+
+<Base
+  title={`Currículo · ${profile.name}`}
+  description="Experiência, formação, certificações e competências de Deyvid Prado."
+>
+  <div class="pagina">
+    <TituloSecao destaque="MEU" resto="CURRÍCULO" subtitulo="Experiência e formação" />
+
+    <div class="grid gap-14 lg:grid-cols-2 lg:gap-12">
+      <section aria-labelledby="experiencia-titulo" data-reveal>
+        <h2 id="experiencia-titulo" class="flex items-center gap-2 text-sm font-bold tracking-[0.14em] uppercase">
+          <Icon name="star" class="size-4 text-brand" />
+          Experiência profissional
+        </h2>
+
+        <ol class="linha-tempo mt-8">
+          {
+            experience.map((job) => (
+              <li class="linha-tempo-item">
+                <span class="linha-tempo-ano">{ano(job.period)}</span>
+                <span class="linha-tempo-ponto" aria-hidden="true" />
+                <h3 class="text-lg font-semibold">{job.title}</h3>
+                <p class="mt-1 text-brand">
+                  {job.href ? (
+                    <a class="hover:underline" href={job.href}>
+                      {job.org}
+                    </a>
+                  ) : (
+                    job.org
+                  )}
+                </p>
+                <p class="text-sm text-muted">
+                  {job.period} · {job.place}
+                </p>
+                <ul class="mt-3 space-y-1.5 text-[0.9375rem] text-muted">
+                  {job.points.map((point) => (
+                    <li class="flex gap-2">
+                      <span class="mt-[0.7em] h-px w-2.5 shrink-0 bg-primary" aria-hidden="true" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section aria-labelledby="estudos-titulo" data-reveal style="--i: 1">
+        <h2 id="estudos-titulo" class="flex items-center gap-2 text-sm font-bold tracking-[0.14em] uppercase">
+          <Icon name="user" class="size-4 text-brand" />
+          Estudos
+        </h2>
+
+        <ol class="linha-tempo mt-8">
+          {
+            education.map((item) => (
+              <li class="linha-tempo-item">
+                <span class="linha-tempo-ano">{ano(item.period)}</span>
+                <span class="linha-tempo-ponto" aria-hidden="true" />
+                <h3 class="text-lg font-semibold">{item.title}</h3>
+                <p class="mt-1 text-brand">{item.org}</p>
+                <p class="text-sm text-muted">{item.period}</p>
+              </li>
+            ))
+          }
+        </ol>
+
+        <h2 class="mt-4 flex items-center gap-2 text-sm font-bold tracking-[0.14em] uppercase">
+          <Icon name="check" class="size-4 text-brand" />
+          Certificações
+        </h2>
+        <ul class="mt-6 divide-y divide-base-300 border-y border-base-300">
+          {
+            certifications.map((cert) => (
+              <li class="flex flex-wrap items-baseline justify-between gap-x-4 py-3">
+                <span class="font-medium">{cert.name}</span>
+                <span class="text-sm text-muted">
+                  {cert.issuer} · {cert.year}
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+    </div>
+
+    <section class="mt-16" aria-labelledby="competencias-titulo" data-reveal>
+      <h2 id="competencias-titulo" class="flex items-center gap-2 text-sm font-bold tracking-[0.14em] uppercase">
+        <Icon name="grid" class="size-4 text-brand" />
+        Competências
+      </h2>
+
+      <dl class="mt-6 divide-y divide-base-300 border-y border-base-300">
+        {
+          skills.map((group) => (
+            <div class="grid gap-1 py-4 sm:grid-cols-[11rem_1fr] sm:gap-8">
+              <dt class="font-semibold">{group.group}</dt>
+              <dd class="text-muted">{group.items.join(', ')}</dd>
+            </div>
+          ))
+        }
+        <div class="grid gap-1 py-4 sm:grid-cols-[11rem_1fr] sm:gap-8">
+          <dt class="font-semibold">Idiomas</dt>
+          <dd class="text-muted">{languages.map((lang) => `${lang.name} (${lang.level})`).join(', ')}</dd>
+        </div>
+      </dl>
+    </section>
+  </div>
+</Base>
