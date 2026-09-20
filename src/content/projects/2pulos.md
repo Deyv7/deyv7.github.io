@@ -1,12 +1,12 @@
 ---
 title: 2 Pulos
-summary: Estúdio próprio de sites, cartões NFC e sistemas sob medida. Criei a marca, o site em dois idiomas e a infraestrutura que entrega uma prévia por cliente.
+summary: Estúdio de sites, cartões NFC e sistemas sob medida que co-fundei. Fiz a marca, o site em dois idiomas e a infraestrutura que entrega uma prévia por cliente.
 category: [software]
 cover: ../../assets/projects/2pulos/logo-capa.png
 gallery:
   - src: ../../assets/projects/2pulos/site.png
     alt: Primeira dobra do site 2pulos.com, com a chamada principal e o cartão NFC
-role: Fundador e Desenvolvedor
+role: Co-fundador e Desenvolvedor
 period: ago 2026 — atual
 status: producao
 private: true
@@ -33,7 +33,7 @@ Um estúdio que vende sites, cartões NFC e sistemas precisa de duas coisas. A p
 
 ## Solução
 
-Criei o estúdio e o site inteiro, do layout e dos textos ao código e à infraestrutura:
+Co-fundei o estúdio e fiz o site inteiro, do layout e dos textos ao código e à infraestrutura:
 
 - **Landing em Next.js 16** com serviços, cartões NFC, planos, processo, FAQ e contato, publicada em **português e inglês**, com troca por bandeira.
 - **Tema claro e escuro** com botão de alternância. Neutralizei a paleta e corrigi o contraste do rodapé, que estava em 3.1 e passou a cumprir o mínimo de 4.5 da WCAG.

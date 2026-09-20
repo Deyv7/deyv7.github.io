@@ -14,7 +14,7 @@ gallery:
     alt: Área para instrutores, com calculadora de ganhos após a taxa de processamento
   - src: ../../assets/projects/e-habilita/duvidas.jpg
     alt: Dúvidas frequentes sobre CNH, pagamento, cancelamento e LADV
-role: Co-fundador e Dev Full-Stack
+role: Fundador e Dev Full-Stack
 period: 2024 — atual
 status: no-ar
 private: true
@@ -43,7 +43,7 @@ Conectar quem quer tirar a habilitação a um instrutor de trânsito envolve qua
 
 ## Solução
 
-Co-fundei a plataforma e desenvolvi o produto de ponta a ponta:
+Fundei a plataforma e desenvolvi o produto de ponta a ponta:
 
 - **Dados:** modelei o banco relacional em PostgreSQL (Supabase) com mais de 12 tabelas, cobrindo usuários, aulas, pagamentos e auditoria.
 - **Pagamentos:** integrei a API do MercadoPago com checkout, gestão de status e split automático entre as partes.
