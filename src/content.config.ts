@@ -16,7 +16,7 @@ const projects = defineCollection({
       role: z.string(),
       // coerce: um ano sozinho no YAML (period: 2025) chega como número
       period: z.coerce.string(),
-      status: z.enum(['producao', 'concluido', 'desenvolvimento']),
+      status: z.enum(['producao', 'no-ar', 'concluido', 'desenvolvimento']),
       private: z.boolean().default(false),
       metrics: z.array(z.object({ value: z.string(), label: z.string() })).default([]),
       stack: z.array(z.object({ name: z.string(), role: z.string() })).min(1),

@@ -53,7 +53,7 @@ const informacoes = [
                 <dt class="text-muted">{item.rotulo}</dt>
                 <dd class="break-words">
                   {item.href ? (
-                    <a class="transition-colors hover:text-brand" href={item.href}>
+                    <a class="transition-colors hover:text-brand" href={item.href} data-email-trigger aria-haspopup="dialog" aria-controls="email-dialog">
                       {item.valor}
                     </a>
                   ) : (

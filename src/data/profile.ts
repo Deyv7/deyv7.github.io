@@ -7,7 +7,7 @@ export const profile = {
   headline: 'Analista de Dados & Desenvolvedor',
   roles: ['Analista de Dados', 'Desenvolvedor Full-Stack', 'Desenvolvedor de IA'],
   description:
-    'Analista de Dados e desenvolvedor. SQL, Power BI e Python aplicados a problemas reais, e sistemas que estão em produção.',
+    'Analista de Dados e desenvolvedor. SQL, Power BI e Python aplicados a problemas reais, e sistemas que estão no ar.',
   workModes: 'remoto, híbrido ou presencial em Brasília',
   email: 'ddpessoall@gmail.com',
   linkedin: 'https://www.linkedin.com/in/deyv',
@@ -54,7 +54,7 @@ export const experience: Job[] = [
     place: 'remoto',
     href: '/projetos/e-habilita/',
     points: [
-      'Modelei o banco PostgreSQL (12+ tabelas) e as integrações de API que sustentam a plataforma em produção',
+      'Modelei o banco PostgreSQL (12+ tabelas) e as integrações de API que sustentam a plataforma',
       'Implementei pagamentos com MercadoPago, rastreamento GPS das aulas e verificação facial com TensorFlow.js',
     ],
   },
@@ -88,7 +88,7 @@ export const skills = [
   { group: 'SQL & bancos', items: ['SQL', 'Modelagem relacional', 'PostgreSQL', 'SQL Server', 'MySQL', 'MongoDB', 'Supabase'] },
   { group: 'Python & análise', items: ['Python', 'Pandas', 'NumPy', 'Streamlit', 'Análise exploratória', 'R'] },
   { group: 'Desenvolvimento', items: ['TypeScript', 'Next.js', 'React Native / Expo', 'Node.js / Express', 'FastAPI', 'APIs REST', 'Git'] },
-  { group: 'IA aplicada', items: ['Claude', 'ChatGPT', 'Gemini', 'Agentes com Agno', 'TensorFlow.js'] },
+  { group: 'IA aplicada', items: ['Claude', 'ChatGPT', 'Gemini', 'Agentes com Agno', 'TensorFlow.js', 'OpenCV', 'MediaPipe'] },
 ];
 
 export const languages = [

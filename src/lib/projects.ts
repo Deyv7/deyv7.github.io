@@ -12,6 +12,7 @@ export const categoryLabel: Record<Category, string> = {
 
 export const statusLabel: Record<Project['data']['status'], string> = {
   producao: 'Em produção',
+  'no-ar': 'No ar',
   concluido: 'Concluído',
   desenvolvimento: 'Em desenvolvimento',
 };

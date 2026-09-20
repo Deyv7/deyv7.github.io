@@ -1,6 +1,6 @@
 ---
 title: E-Habilita
-summary: Marketplace que conecta alunos a instrutores de trânsito, em produção com pagamentos, rastreamento GPS das aulas e verificação facial dos instrutores.
+summary: Marketplace que conecta alunos a instrutores de trânsito, no ar com pagamentos, rastreamento GPS das aulas e verificação facial dos instrutores.
 category: [software, dados, ia]
 cover: ../../assets/projects/e-habilita/logo-capa.png
 gallery:
@@ -16,10 +16,10 @@ gallery:
     alt: Dúvidas frequentes sobre CNH, pagamento, cancelamento e LADV
 role: Co-fundador e Dev Full-Stack
 period: 2024 — atual
-status: producao
+status: no-ar
 private: true
 metrics:
-  - { value: "12+", label: "tabelas PostgreSQL em produção" }
+  - { value: "12+", label: "tabelas PostgreSQL modeladas" }
   - { value: "3", label: "painéis: aluno, instrutor e administração" }
   - { value: "Web + app", label: "Next.js no navegador, Expo no celular" }
 stack:
@@ -30,7 +30,7 @@ stack:
   - { name: TensorFlow.js (BlazeFace), role: "Detecção facial com modelo pré-treinado para verificar instrutores" }
   - { name: TypeScript, role: "Tipagem de ponta a ponta na web e no app" }
   - { name: Tailwind CSS v4, role: "Interface da aplicação web" }
-  - { name: Sentry, role: "Monitoramento de erros em produção" }
+  - { name: Sentry, role: "Monitoramento de erros da aplicação" }
 links:
   demo: https://e-habilita.com.br
 related: [ai-ehabilita]
@@ -53,4 +53,4 @@ Co-fundei a plataforma e desenvolvi o produto de ponta a ponta:
 
 ## Resultado
 
-A plataforma está **em produção** em e-habilita.com.br, com dados reais e monitoramento de erros pelo Sentry. O atendimento e a validação de cadastros contam com um agente de IA próprio, descrito no projeto relacionado.
+A plataforma está **no ar** em e-habilita.com.br, em fase beta e ainda sem base de usuários, com os erros monitorados pelo Sentry. O atendimento e a validação de cadastros contam com um agente de IA próprio, descrito no projeto relacionado.
