@@ -1,0 +1,14 @@
+---
+// Bloco neutro para projetos ainda sem imagem de capa
+import type { Project } from '../lib/projects';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+---
+
+<div class="grid size-full place-items-center bg-base-200 p-6" aria-hidden="true">
+  <span class="text-center text-base font-semibold text-muted">{project.data.title}</span>
+</div>

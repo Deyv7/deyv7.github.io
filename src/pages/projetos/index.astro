@@ -1,0 +1,79 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import TituloSecao from '../../components/TituloSecao.astro';
+import { categoryLabel, getProjects, type Category } from '../../lib/projects';
+import { profile } from '../../data/profile';
+
+const projects = await getProjects();
+const categories = Object.keys(categoryLabel) as Category[];
+---
+
+<Base
+  title={`Portfólio · ${profile.name}`}
+  description="Análises, produtos e automações feitos por Deyvid Prado: dados, software e IA."
+>
+  <div class="pagina">
+    <TituloSecao destaque="PORTFÓLIO" subtitulo="Trabalhos realizados" />
+
+    <div class="entrada mb-10 flex border-b border-base-300 pb-5" style="--i: 1">
+      <div class="flex flex-wrap gap-2" role="radiogroup" aria-label="Filtrar projetos por área">
+        <label class="cursor-pointer">
+          <input type="radio" name="filtro-projetos" class="peer sr-only" value="todos" checked />
+          <span
+            class="block px-5 py-2.5 text-sm font-semibold tracking-wide uppercase text-muted transition-colors peer-checked:bg-primary peer-checked:text-primary-content peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary hover:text-base-content"
+          >
+            Tudo
+          </span>
+        </label>
+        {
+          categories.map((category) => (
+            <label class="cursor-pointer">
+              <input type="radio" name="filtro-projetos" class="peer sr-only" value={category} />
+              <span class="block px-5 py-2.5 text-sm font-semibold tracking-wide uppercase text-muted transition-colors peer-checked:bg-primary peer-checked:text-primary-content peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary hover:text-base-content">
+                {categoryLabel[category]}
+              </span>
+            </label>
+          ))
+        }
+      </div>
+    </div>
+
+    <p class="sr-only" aria-live="polite" data-filter-status></p>
+
+    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-project-grid>
+      {
+        projects.map((project, index) => (
+          <li data-reveal style={`--i: ${index % 3}`} data-category={project.data.category.join(' ')}>
+            <ProjectCard project={project} index={index} />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Base>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const grid = document.querySelector('[data-project-grid]');
+    if (!grid) return;
+    const status = document.querySelector('[data-filter-status]');
+
+    for (const input of document.querySelectorAll<HTMLInputElement>('input[name="filtro-projetos"]')) {
+      input.addEventListener('change', () => {
+        let visible = 0;
+        for (const item of grid.querySelectorAll<HTMLElement>('[data-category]')) {
+          const show = input.value === 'todos' || (item.dataset.category ?? '').split(' ').includes(input.value);
+          item.hidden = !show;
+          item.classList.remove('filtrado');
+          if (!show) continue;
+          item.style.setProperty('--i', String(visible));
+          void item.offsetWidth; // reinicia a animação de entrada
+          item.classList.add('filtrado', 'visivel');
+          visible++;
+        }
+        if (status) status.textContent = `${visible} ${visible === 1 ? 'projeto' : 'projetos'}`;
+      });
+    }
+  });
+</script>

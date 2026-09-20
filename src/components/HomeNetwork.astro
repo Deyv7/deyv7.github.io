@@ -1,0 +1,90 @@
+---
+// Coordenadas fixas: a composição é idêntica no servidor e no navegador.
+const nodes = [
+  [25, 100], [170, 230], [45, 435], [185, 675],
+  [195, 85], [85, 290], [205, 485], [35, 730],
+];
+const edges = [[0, 1], [1, 2], [2, 3], [3, 0], [0, 4], [4, 5], [5, 6], [6, 7], [7, 2]];
+const sides = ['left', 'right'];
+---
+
+<div class="home-network" aria-hidden="true" data-network-entrance>
+  <div class="home-network-layer" data-network-scroll>
+    <div class="home-network-layer" data-network-pointer>
+      <svg viewBox="0 0 1200 800" preserveAspectRatio="none" focusable="false" aria-hidden="true">
+        {sides.map((side, sideIndex) => {
+          const points = nodes.map(([x, y]) => [sideIndex ? 1200 - x : x, sideIndex ? 800 - y : y]);
+          return (
+            <g data-network-float={side}>
+              {edges.map(([from, to], index) => (
+                <line
+                  x1={points[from][0]} y1={points[from][1]}
+                  x2={points[to][0]} y2={points[to][1]}
+                  class:list={['network-line', { 'network-desktop': index >= 4 }]}
+                  vector-effect="non-scaling-stroke"
+                />
+              ))}
+              {points.map(([x, y], index) => (
+                <circle cx={x} cy={y} r="3" class:list={['network-node', { 'network-desktop': index >= 4 }]} />
+              ))}
+              {[0, 6].map((edgeIndex, index) => {
+                const [from, to] = edges[edgeIndex];
+                return (
+                  <circle
+                    cx={points[from][0]} cy={points[from][1]} r="3.5"
+                    class:list={['network-pulse', { 'network-desktop': index === 1 }]}
+                    data-network-pulse
+                    data-dx={points[to][0] - points[from][0]}
+                    data-dy={points[to][1] - points[from][1]}
+                  />
+                );
+              })}
+            </g>
+          );
+        })}
+      </svg>
+    </div>
+  </div>
+</div>
+
+<style>
+  .home-network,
+  .home-network-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .home-network svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .network-line {
+    fill: none;
+    stroke: var(--color-base-content);
+    stroke-width: 1;
+    opacity: 0.13;
+  }
+
+  .network-node {
+    fill: var(--color-base-content);
+    opacity: 0.3;
+  }
+
+  .network-pulse {
+    fill: var(--color-accent);
+    opacity: 0;
+  }
+
+  @media (max-width: 767px) {
+    .network-desktop { display: none; }
+    .network-line { opacity: 0.1; }
+    .network-node { opacity: 0.22; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .network-pulse { display: none; }
+  }
+</style>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="seta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8a857c"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="1000" fill="#f6f4ef"/>
+
+  <rect x="90" y="370" width="400" height="260" rx="28" fill="#fffdf9" stroke="#d9d4ca" stroke-width="3"/>
+  <text x="290" y="492" text-anchor="middle" font-size="58" font-weight="600" fill="#22201c">Documentos</text>
+  <text x="290" y="550" text-anchor="middle" font-size="28" fill="#6b6760">CNH · certidão · endereço</text>
+
+  <line x1="505" y1="500" x2="582" y2="500" stroke="#8a857c" stroke-width="5" marker-end="url(#seta)"/>
+
+  <rect x="600" y="370" width="400" height="260" rx="28" fill="#22201c"/>
+  <text x="800" y="492" text-anchor="middle" font-size="58" font-weight="600" fill="#f6f4ef">Agente IA</text>
+  <text x="800" y="550" text-anchor="middle" font-size="28" fill="#bdb7ac">OCR + validação</text>
+
+  <path d="M1015 460 C 1060 460, 1060 385, 1092 385" fill="none" stroke="#8a857c" stroke-width="5" marker-end="url(#seta)"/>
+  <path d="M1015 540 C 1060 540, 1060 615, 1092 615" fill="none" stroke="#8a857c" stroke-width="5" marker-end="url(#seta)"/>
+
+  <rect x="1110" y="290" width="400" height="190" rx="28" fill="#e3efe8" stroke="#2f6b4f" stroke-width="3"/>
+  <text x="1310" y="402" text-anchor="middle" font-size="50" font-weight="600" fill="#1f4d38">Aprovado</text>
+
+  <rect x="1110" y="520" width="400" height="190" rx="28" fill="#fbf1dc" stroke="#b7892f" stroke-width="3"/>
+  <text x="1310" y="632" text-anchor="middle" font-size="46" font-weight="600" fill="#6b4d12">Revisão humana</text>
+</svg>

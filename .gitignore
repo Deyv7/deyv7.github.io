@@ -17,3 +17,7 @@ npm-debug.log*
 Thumbs.db
 .vscode/*
 !.vscode/extensions.json
+
+# ferramentas locais de IA
+.claude/
+.impeccable.md
