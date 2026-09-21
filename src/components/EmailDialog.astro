@@ -1,6 +1,9 @@
 ---
 import Icon from './Icon.astro';
 import { profile } from '../data/profile';
+import { getLocale } from '../lib/i18n';
+
+const english = getLocale(Astro.url.pathname) === 'en-US';
 
 const email = encodeURIComponent(profile.email);
 const providers = [
@@ -14,22 +17,25 @@ const providers = [
   class="email-dialog"
   data-email-dialog
   data-email={profile.email}
+  data-copy-pending={english ? 'Copying email…' : 'Copiando e-mail…'}
+  data-copy-success={english ? 'Email copied!' : 'E-mail copiado!'}
+  data-copy-error={english ? 'Unable to copy automatically. Copy the selected address manually.' : 'Não foi possível copiar automaticamente. Copie o endereço selecionado manualmente.'}
   aria-labelledby="email-dialog-title"
   aria-describedby="email-dialog-description"
 >
   <div class="email-panel t-modal">
     <div class="flex items-start justify-between gap-4">
       <div>
-        <p class="mb-2 text-xs font-semibold tracking-[0.14em] text-brand uppercase">Contato</p>
-        <h2 id="email-dialog-title" class="text-2xl font-bold tracking-tight">Enviar e-mail</h2>
+        <p class="mb-2 text-xs font-semibold tracking-[0.14em] text-brand uppercase">{english ? 'Contact' : 'Contato'}</p>
+        <h2 id="email-dialog-title" class="text-2xl font-bold tracking-tight">{english ? 'Send an email' : 'Enviar e-mail'}</h2>
       </div>
-      <button type="button" class="btn btn-ghost btn-square -mt-1 -mr-1" data-email-close aria-label="Fechar modal">
+      <button type="button" class="btn btn-ghost btn-square -mt-1 -mr-1" data-email-close aria-label={english ? 'Close dialog' : 'Fechar modal'}>
         <Icon name="close" class="size-5" />
       </button>
     </div>
 
-    <p id="email-dialog-description" class="mt-3 text-sm text-muted">Escolha como prefere entrar em contato.</p>
-    <label for="email-dialog-address" class="sr-only">Endereço de e-mail</label>
+    <p id="email-dialog-description" class="mt-3 text-sm text-muted">{english ? 'Choose how you would like to get in touch.' : 'Escolha como prefere entrar em contato.'}</p>
+    <label for="email-dialog-address" class="sr-only">{english ? 'Email address' : 'Endereço de e-mail'}</label>
     <input id="email-dialog-address" class="email-address" type="text" value={profile.email} readonly data-email-address />
 
     <div class="mt-5 grid gap-2">
@@ -37,8 +43,8 @@ const providers = [
         <a href={provider.href} class="email-option" target="_blank" rel="noopener noreferrer" data-email-provider>
           <span class="email-option-icon font-bold" aria-hidden="true">{provider.initial}</span>
           <span class="flex-1">
-            <span class="block font-semibold">Abrir {provider.name}</span>
-            <span class="block text-xs text-muted">Escrever em uma nova aba</span>
+            <span class="block font-semibold">{english ? 'Open' : 'Abrir'} {provider.name}</span>
+            <span class="block text-xs text-muted">{english ? 'Compose in a new tab' : 'Escrever em uma nova aba'}</span>
           </span>
           <Icon name="external" class="size-4 shrink-0 text-muted" />
         </a>
@@ -46,8 +52,8 @@ const providers = [
       <button type="button" class="email-option" data-email-copy>
         <span class="email-option-icon" aria-hidden="true"><Icon name="copy" class="size-5" /></span>
         <span class="flex-1">
-          <span class="block font-semibold">Copiar e-mail</span>
-          <span class="block text-xs text-muted">Usar onde preferir</span>
+          <span class="block font-semibold">{english ? 'Copy email address' : 'Copiar e-mail'}</span>
+          <span class="block text-xs text-muted">{english ? 'Use it wherever you prefer' : 'Usar onde preferir'}</span>
         </span>
       </button>
     </div>
@@ -73,7 +79,7 @@ const providers = [
   .email-dialog {
     position: fixed;
     inset: 0;
-    width: 100%;
+    width: 100vw;
     height: 100%;
     max-width: none;
     max-height: none;

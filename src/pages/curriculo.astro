@@ -2,23 +2,28 @@
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import TituloSecao from '../components/TituloSecao.astro';
-import { certifications, education, experience, languages, profile, skills } from '../data/profile';
+import { getProfileData } from '../lib/profile-data';
+import { getLocale, localizePath } from '../lib/i18n';
+
+const locale = getLocale(Astro.url.pathname);
+const english = locale === 'en-US';
+const { certifications, education, experience, languages, profile, skills } = getProfileData(locale);
 
 const ano = (periodo: string) => periodo.match(/\d{4}/)?.[0] ?? '';
 ---
 
 <Base
-  title={`Currículo · ${profile.name}`}
-  description="Experiência, formação, certificações e competências de Deyvid Prado."
+  title={`${english ? 'Resume' : 'Currículo'} · ${profile.name}`}
+  description={english ? 'Deyvid Prado’s experience, education, certifications, and skills.' : 'Experiência, formação, certificações e competências de Deyvid Prado.'}
 >
   <div class="pagina">
-    <TituloSecao destaque="MEU" resto="CURRÍCULO" subtitulo="Experiência e formação" />
+    <TituloSecao destaque={english ? 'MY' : 'MEU'} resto={english ? 'RESUME' : 'CURRÍCULO'} subtitulo={english ? 'Experience and education' : 'Experiência e formação'} />
 
     <div class="grid gap-14 lg:grid-cols-2 lg:gap-12">
       <section aria-labelledby="experiencia-titulo" data-reveal>
         <h2 id="experiencia-titulo" class="flex items-center gap-2 text-sm font-bold tracking-[0.14em] uppercase">
           <Icon name="star" class="size-4 text-brand" />
-          Experiência profissional
+          {english ? 'Work experience' : 'Experiência profissional'}
         </h2>
 
         <ol class="linha-tempo mt-8">
@@ -30,7 +35,7 @@ const ano = (periodo: string) => periodo.match(/\d{4}/)?.[0] ?? '';
                 <h3 class="text-lg font-semibold">{job.title}</h3>
                 <p class="mt-1 text-brand">
                   {job.href ? (
-                    <a class="hover:underline" href={job.href}>
+                    <a class="hover:underline" href={localizePath(job.href, locale)}>
                       {job.org}
                     </a>
                   ) : (
@@ -57,7 +62,7 @@ const ano = (periodo: string) => periodo.match(/\d{4}/)?.[0] ?? '';
       <section aria-labelledby="estudos-titulo" data-reveal style="--i: 1">
         <h2 id="estudos-titulo" class="flex items-center gap-2 text-sm font-bold tracking-[0.14em] uppercase">
           <Icon name="user" class="size-4 text-brand" />
-          Estudos
+          {english ? 'Education' : 'Estudos'}
         </h2>
 
         <ol class="linha-tempo mt-8">
@@ -76,7 +81,7 @@ const ano = (periodo: string) => periodo.match(/\d{4}/)?.[0] ?? '';
 
         <h2 class="mt-4 flex items-center gap-2 text-sm font-bold tracking-[0.14em] uppercase">
           <Icon name="check" class="size-4 text-brand" />
-          Certificações
+          {english ? 'Certifications' : 'Certificações'}
         </h2>
         <ul class="mt-6 divide-y divide-base-300 border-y border-base-300">
           {
@@ -96,7 +101,7 @@ const ano = (periodo: string) => periodo.match(/\d{4}/)?.[0] ?? '';
     <section class="mt-16" aria-labelledby="competencias-titulo" data-reveal>
       <h2 id="competencias-titulo" class="flex items-center gap-2 text-sm font-bold tracking-[0.14em] uppercase">
         <Icon name="grid" class="size-4 text-brand" />
-        Competências
+        {english ? 'Skills' : 'Competências'}
       </h2>
 
       <dl class="mt-6 divide-y divide-base-300 border-y border-base-300">
@@ -109,7 +114,7 @@ const ano = (periodo: string) => periodo.match(/\d{4}/)?.[0] ?? '';
           ))
         }
         <div class="grid gap-1 py-4 sm:grid-cols-[11rem_1fr] sm:gap-8">
-          <dt class="font-semibold">Idiomas</dt>
+          <dt class="font-semibold">{english ? 'Languages' : 'Idiomas'}</dt>
           <dd class="text-muted">{languages.map((lang) => `${lang.name} (${lang.level})`).join(', ')}</dd>
         </div>
       </dl>

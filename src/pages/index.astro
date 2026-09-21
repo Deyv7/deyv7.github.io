@@ -4,9 +4,13 @@ import Icon from '../components/Icon.astro';
 import HomeNetwork from '../components/HomeNetwork.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { getProjects } from '../lib/projects';
-import { profile } from '../data/profile';
+import { getProfileData } from '../lib/profile-data';
+import { getLocale, localizePath } from '../lib/i18n';
 
-const projects = (await getProjects()).slice(0, 3);
+const locale = getLocale(Astro.url.pathname);
+const english = locale === 'en-US';
+const { profile } = getProfileData(locale);
+const projects = (await getProjects(locale)).slice(0, 3);
 ---
 
 <Base>
@@ -18,11 +22,11 @@ const projects = (await getProjects()).slice(0, 3);
     <HomeNetwork />
     <div class="relative max-w-3xl">
       <h1 class="text-4xl font-bold tracking-tight sm:text-6xl" data-home-intro>
-        <span class="bg-primary px-4 py-2 text-primary-content">SEJA</span> BEM-VINDO!
+        <span class="bg-primary px-4 py-2 text-primary-content">{english ? 'HELLO' : 'SEJA'}</span> {english ? '& WELCOME!' : 'BEM-VINDO!'}
       </h1>
 
       <p class="mt-6 text-xl sm:text-2xl" data-home-intro>
-        Eu sou
+        {english ? 'I’m' : 'Eu sou'}
         <span class="sr-only">{profile.roles.join(', ')}</span>
         <span class="text-rotate duration-9000 ml-1 align-bottom font-semibold text-brand" aria-hidden="true">
           <span>
@@ -34,12 +38,12 @@ const projects = (await getProjects()).slice(0, 3);
       <p class="mx-auto mt-6 max-w-xl text-muted" data-home-intro>{profile.description}</p>
 
       <div class="mt-10 flex flex-wrap justify-center gap-3" data-home-intro>
-        <a href="/projetos/" class="btn btn-primary">Ver portfólio</a>
+        <a href={localizePath('/projetos/', locale)} class="btn btn-primary">{english ? 'View portfolio' : 'Ver portfólio'}</a>
         {
           profile.cvUrl && (
-            <a href={profile.cvUrl} class="btn btn-outline" download>
-              <Icon name="download" class="size-4" />
-              Baixar CV
+            <a href={profile.cvUrl} class="btn btn-outline" target="_blank" rel="noopener noreferrer" aria-label={english ? 'View resume (PDF in Portuguese, opens in a new tab)' : 'Ver currículo (PDF, abre em uma nova aba)'}>
+              <Icon name="external" class="size-4" />
+              {english ? 'View resume (PT-BR)' : 'Ver currículo'}
             </a>
           )
         }
@@ -49,7 +53,7 @@ const projects = (await getProjects()).slice(0, 3);
     <a
       href="#projetos-selecionados"
       class="absolute bottom-8 left-1/2 -translate-x-1/2 text-muted transition-colors hover:text-base-content"
-      aria-label="Ir para projetos selecionados"
+      aria-label={english ? 'Go to selected projects' : 'Ir para projetos selecionados'}
     >
       <Icon name="arrow-down" class="size-6" />
     </a>
@@ -58,11 +62,11 @@ const projects = (await getProjects()).slice(0, 3);
     <div class="pagina">
       <header class="mb-8 flex flex-wrap items-end justify-between gap-5">
         <div>
-          <p class="mb-2 text-xs font-semibold tracking-[0.14em] text-brand uppercase">Dados, software e IA</p>
-          <h2 id="projetos-titulo" class="text-2xl font-bold tracking-tight sm:text-3xl">Projetos selecionados</h2>
+          <p class="mb-2 text-xs font-semibold tracking-[0.14em] text-brand uppercase">{english ? 'Data, software, and AI' : 'Dados, software e IA'}</p>
+          <h2 id="projetos-titulo" class="text-2xl font-bold tracking-tight sm:text-3xl">{english ? 'Selected projects' : 'Projetos selecionados'}</h2>
         </div>
-        <a href="/projetos/" class="btn btn-outline btn-sm">
-          Ver todos os projetos <Icon name="arrow-right" class="size-4" />
+        <a href={localizePath('/projetos/', locale)} class="btn btn-outline btn-sm">
+          {english ? 'View all projects' : 'Ver todos os projetos'} <Icon name="arrow-right" class="size-4" />
         </a>
       </header>
       <ul class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">

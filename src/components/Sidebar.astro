@@ -1,11 +1,17 @@
 ---
 import Icon from './Icon.astro';
-import { nav, profile } from '../data/profile';
+import { getProfileData } from '../lib/profile-data';
+import { getLocale, localizePath } from '../lib/i18n';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+const locale = getLocale(Astro.url.pathname);
+const english = locale === 'en-US';
+const { nav, profile } = getProfileData(locale);
 
 const atual = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const ehAtivo = (href: string) => {
-  const alvo = href.replace(/\/+$/, '') || '/';
-  return alvo === '/' ? atual === '/' : atual === alvo || atual.startsWith(`${alvo}/`);
+  const alvo = localizePath(href, locale).replace(/\/+$/, '') || '/';
+  return alvo === '/' || alvo === '/en' ? atual === alvo : atual === alvo || atual.startsWith(`${alvo}/`);
 };
 const ano = new Date().getFullYear();
 ---
@@ -20,13 +26,13 @@ const ano = new Date().getFullYear();
     <p class="mt-5 text-lg leading-tight font-semibold">{profile.name}</p>
   </div>
 
-  <nav aria-label="Menu principal">
+  <nav aria-label={english ? 'Main menu' : 'Menu principal'}>
     <ul class="border-t border-base-300">
       {
         nav.map((item) => (
           <li>
             <a
-              href={item.href}
+              href={localizePath(item.href, locale)}
               aria-current={ehAtivo(item.href) ? 'page' : undefined}
               class:list={[
                 'flex items-center gap-3 border-b border-base-300 pe-5 text-sm transition-colors',
@@ -50,6 +56,7 @@ const ano = new Date().getFullYear();
   </nav>
 
   <div class="mt-auto px-6 py-7">
+    <div class="mb-5 hidden lg:block"><LanguageSwitcher /></div>
     <div class="flex items-center gap-1">
       <a
         href={profile.github}
@@ -69,21 +76,21 @@ const ano = new Date().getFullYear();
       >
         <Icon name="linkedin" class="size-[1.125rem]" />
       </a>
-      <a href={`mailto:${profile.email}`} class="btn btn-ghost btn-square btn-sm" aria-label="Enviar e-mail" data-email-trigger aria-haspopup="dialog" aria-controls="email-dialog">
+      <a href={`mailto:${profile.email}`} class="btn btn-ghost btn-square btn-sm" aria-label={english ? 'Send email' : 'Enviar e-mail'} data-email-trigger aria-haspopup="dialog" aria-controls="email-dialog">
         <Icon name="mail" class="size-[1.125rem]" />
       </a>
-      <label class="btn btn-ghost btn-square btn-sm" title="Alternar tema claro/escuro">
+      <label class="btn btn-ghost btn-square btn-sm" title={english ? 'Toggle light/dark theme' : 'Alternar tema claro/escuro'}>
         <span class="swap swap-rotate">
-          <input type="checkbox" data-theme-toggle aria-label="Usar tema claro" />
+          <input type="checkbox" data-theme-toggle aria-label={english ? 'Use light theme' : 'Usar tema claro'} />
           <Icon name="sun" class="swap-off size-[1.125rem]" />
           <Icon name="moon" class="swap-on size-[1.125rem]" />
         </span>
-        <span class="sr-only">Alternar tema claro ou escuro</span>
+        <span class="sr-only">{english ? 'Toggle light or dark theme' : 'Alternar tema claro ou escuro'}</span>
       </label>
     </div>
 
     <p class="mt-4 border-t border-base-300 pt-4 text-xs leading-relaxed text-muted">
-      {ano} © copyright<br />Todos os direitos reservados.
+      {ano} © copyright<br />{english ? 'All rights reserved.' : 'Todos os direitos reservados.'}
     </p>
   </div>
 </aside>

@@ -1,0 +1,20 @@
+---
+import { getLocale, localizePath } from '../lib/i18n';
+const locale = getLocale(Astro.url.pathname);
+---
+
+<nav class="inline-flex shrink-0 overflow-hidden rounded-field border border-base-300" aria-label={locale === 'en-US' ? 'Language' : 'Idioma'}>
+  {(['pt-BR', 'en-US'] as const).map((language) => (
+    <a
+      href={localizePath(Astro.url.pathname, language)}
+      lang={language}
+      hreflang={language}
+      aria-label={language === 'pt-BR' ? 'Português do Brasil' : 'English (United States)'}
+      aria-current={locale === language ? 'true' : undefined}
+      class:list={[
+        'inline-flex min-h-9 min-w-14 items-center justify-center px-2 text-xs font-semibold transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary',
+        locale === language ? 'bg-primary text-primary-content' : 'text-muted hover:bg-base-300/50 hover:text-base-content',
+      ]}
+    >{language.toUpperCase()}</a>
+  ))}
+</nav>

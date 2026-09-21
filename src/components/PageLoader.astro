@@ -1,6 +1,8 @@
 ---
 import brainLoading from '../assets/brain-loading.svg?raw';
 import { profile } from '../data/profile';
+import { getLocale } from '../lib/i18n';
+const english = getLocale(Astro.url.pathname) === 'en-US';
 ---
 
 <div
@@ -8,19 +10,19 @@ import { profile } from '../data/profile';
   class="abertura"
   role="status"
   aria-live="polite"
-  aria-label="Carregando página"
+  aria-label={english ? 'Loading page' : 'Carregando página'}
   transition:persist="page-loader"
   transition:animate="none"
 >
   <div class="abertura-conteudo">
     <div class="abertura-cerebro" set:html={brainLoading} />
     <p class="abertura-nome">{profile.displayName}</p>
-    <p class="abertura-papel" data-loading-label>Carregando o portfólio</p>
+    <p class="abertura-papel" data-loading-label>{english ? 'Loading portfolio' : 'Carregando o portfólio'}</p>
   </div>
 </div>
 
 <script>
-  import { nav } from '../data/profile';
+  import { getLocale, localizePath, navigationLabels } from '../lib/i18n';
   import { loadingEvent } from '../lib/loading-state';
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -97,10 +99,15 @@ import { profile } from '../data/profile';
     window.clearTimeout(stopping);
     started = performance.now();
     active = true;
-    const path = pathname.replace(/\/+$/, '') || '/';
-    const page = nav.find((item) => (item.href.replace(/\/+$/, '') || '/') === path);
+    const locale = getLocale(pathname);
+    const path = localizePath(pathname, 'pt-BR');
+    const labels = navigationLabels[locale];
+    const page = labels[path as keyof typeof labels];
     const label = document.querySelector('[data-loading-label]');
-    if (label) label.textContent = page ? `Carregando ${page.label}` : 'Carregando projeto';
+    if (label) label.textContent = locale === 'en-US'
+      ? `Loading ${page ?? 'project'}`
+      : `Carregando ${page ?? 'projeto'}`;
+    document.querySelector('#page-loader')?.setAttribute('aria-label', locale === 'en-US' ? 'Loading page' : 'Carregando página');
     setBusy(true);
     restartAnimation();
     // Libera a interface mesmo se a navegação for interrompida ou falhar.
