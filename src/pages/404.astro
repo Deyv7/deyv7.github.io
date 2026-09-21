@@ -1,12 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
 import TituloSecao from '../components/TituloSecao.astro';
+import { getLocale, localizePath } from '../lib/i18n';
+const locale = getLocale(Astro.url.pathname);
+const english = locale === 'en-US';
 ---
 
-<Base title="Página não encontrada · Deyvid Prado" description="Esta página não existe.">
+<Base title={`${english ? 'Page not found' : 'Página não encontrada'} · Deyvid Prado`} description={english ? 'This page does not exist.' : 'Esta página não existe.'}>
   <div class="pagina">
-    <TituloSecao destaque="ERRO" resto="404" subtitulo="Página não encontrada" />
-    <p class="lede text-muted">O endereço pode ter mudado. Os trabalhos continuam na página de portfólio.</p>
-    <a href="/projetos/" class="btn btn-primary mt-8">Ver portfólio</a>
+    <TituloSecao destaque={english ? 'ERROR' : 'ERRO'} resto="404" subtitulo={english ? 'Page not found' : 'Página não encontrada'} />
+    <p class="lede text-muted">{english ? 'This address may have changed. You can still find my work in the portfolio.' : 'O endereço pode ter mudado. Os trabalhos continuam na página de portfólio.'}</p>
+    <a href={localizePath('/projetos/', locale)} class="btn btn-primary mt-8">{english ? 'View portfolio' : 'Ver portfólio'}</a>
   </div>
 </Base>

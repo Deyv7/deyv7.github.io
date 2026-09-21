@@ -2,25 +2,30 @@
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import TituloSecao from '../components/TituloSecao.astro';
-import { profile } from '../data/profile';
+import { getProfileData } from '../lib/profile-data';
+import { getLocale } from '../lib/i18n';
 
+const locale = getLocale(Astro.url.pathname);
+const english = locale === 'en-US';
+const { profile } = getProfileData(locale);
 const { dados, dev } = profile.targetRoles;
-const lista = (itens: readonly string[]) => `${itens.slice(0, -1).join(', ')} ou ${itens.at(-1)}`;
+const lista = (itens: readonly string[]) => `${itens.slice(0, -1).join(', ')} ${english ? 'or' : 'ou'} ${itens.at(-1)}`;
 const areas = [
-  { area: 'Dados', cargos: lista(dados) },
-  { area: 'Desenvolvimento', cargos: lista(dev) },
+  { area: english ? 'Data' : 'Dados', cargos: lista(dados) },
+  { area: english ? 'Development' : 'Desenvolvimento', cargos: lista(dev) },
 ];
 ---
 
-<Base title={`Contato · ${profile.name}`} description="Fale com Deyvid Prado por e-mail ou LinkedIn.">
+<Base title={`${english ? 'Contact' : 'Contato'} · ${profile.name}`} description={english ? 'Get in touch with Deyvid Prado by email or LinkedIn.' : 'Fale com Deyvid Prado por e-mail ou LinkedIn.'}>
   <div class="pagina">
-    <TituloSecao destaque="CONTATO" subtitulo="Vamos conversar" />
+    <TituloSecao destaque={english ? 'CONTACT' : 'CONTATO'} subtitulo={english ? 'Let’s talk' : 'Vamos conversar'} />
 
     <div class="grid gap-12 lg:grid-cols-[1fr_19rem] lg:gap-16">
       <div data-reveal>
         <p class="lede">
-          Estou aberto a vagas de dados e de desenvolvimento, no modelo {profile.workModes}. O caminho mais rápido é e-mail ou
-          LinkedIn.
+          {english
+            ? `I’m open to data and development roles: ${profile.workModes}. The quickest way to reach me is by email or LinkedIn.`
+            : `Estou aberto a vagas de dados e de desenvolvimento, no modelo ${profile.workModes}. O caminho mais rápido é e-mail ou LinkedIn.`}
         </p>
 
         <dl class="mt-8 divide-y divide-base-300 border-y border-base-300">
@@ -44,7 +49,7 @@ const areas = [
           </a>
           <button type="button" class="btn btn-ghost btn-sm" data-copy={profile.email}>
             <Icon name="copy" class="size-4" />
-            Copiar
+            {english ? 'Copy' : 'Copiar'}
           </button>
         </div>
 
@@ -64,9 +69,9 @@ const areas = [
           {
             profile.cvUrl && (
               <li>
-                <a href={profile.cvUrl} class="btn btn-outline" download>
-                  <Icon name="download" class="size-4" />
-                  Baixar CV
+                <a href={profile.cvUrl} class="btn btn-outline" target="_blank" rel="noopener noreferrer" aria-label={english ? 'View resume (PDF in Portuguese, opens in a new tab)' : 'Ver currículo (PDF, abre em uma nova aba)'}>
+                  <Icon name="external" class="size-4" />
+                  {english ? 'View resume (PT-BR)' : 'Ver currículo'}
                 </a>
               </li>
             )
@@ -77,20 +82,20 @@ const areas = [
       <aside data-reveal style="--i: 1">
         <h2 class="flex items-center gap-2 text-sm font-bold tracking-[0.14em] uppercase">
           <span class="h-4 w-0.5 bg-primary"></span>
-          Onde me encontrar
+          {english ? 'Where to find me' : 'Onde me encontrar'}
         </h2>
         <dl class="mt-6 divide-y divide-base-300 border-y border-base-300 text-[0.9375rem]">
           <div class="grid grid-cols-[7.5rem_1fr] gap-3 py-3">
-            <dt class="text-muted">Base</dt>
+            <dt class="text-muted">{english ? 'Based in' : 'Base'}</dt>
             <dd>Brasília, DF</dd>
           </div>
           <div class="grid grid-cols-[7.5rem_1fr] gap-3 py-3">
-            <dt class="text-muted">Modelo</dt>
+            <dt class="text-muted">{english ? 'Work setup' : 'Modelo'}</dt>
             <dd>{profile.workModes}</dd>
           </div>
           <div class="grid grid-cols-[7.5rem_1fr] gap-3 py-3">
-            <dt class="text-muted">Resposta</dt>
-            <dd>E-mail ou LinkedIn</dd>
+            <dt class="text-muted">{english ? 'Reach me' : 'Resposta'}</dt>
+            <dd>{english ? 'Email or LinkedIn' : 'E-mail ou LinkedIn'}</dd>
           </div>
         </dl>
       </aside>
@@ -100,7 +105,7 @@ const areas = [
   <div class="toast toast-end toast-bottom z-50" aria-live="polite">
     <div class="alert alert-success" data-toast hidden>
       <Icon name="check" class="size-4" />
-      <span>E-mail copiado</span>
+      <span>{english ? 'Email copied' : 'E-mail copiado'}</span>
     </div>
   </div>
 </Base>

@@ -1,8 +1,9 @@
 ---
 import { Image } from 'astro:assets';
 import ProjectCover from './ProjectCover.astro';
-import { categoryLabel, type Project } from '../lib/projects';
+import { getCategoryLabels, type Project } from '../lib/projects';
 import Icon from './Icon.astro';
+import { getLocale, localizePath } from '../lib/i18n';
 
 interface Props {
   project: Project;
@@ -11,6 +12,8 @@ interface Props {
 }
 
 const { project, index = 99 } = Astro.props;
+const locale = getLocale(Astro.url.pathname);
+const categoryLabel = getCategoryLabels(locale);
 // As 3 primeiras (primeira fileira no desktop) carregam sem lazy; o resto entra sob demanda
 const prioritaria = index < 3;
 const d = project.data;
@@ -18,7 +21,7 @@ const categorias = d.category.map((c) => categoryLabel[c]).join(' · ');
 ---
 
 <a
-  href={`/projetos/${project.id}/`}
+  href={localizePath(`/projetos/${project.id}/`, locale)}
   class="group block h-full overflow-hidden rounded-box border border-base-300 bg-base-200 transition-colors hover:border-primary/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
 >
   <div class="aspect-4/3 w-full overflow-hidden border-b border-base-300">

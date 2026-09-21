@@ -2,49 +2,50 @@
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import TituloSecao from '../components/TituloSecao.astro';
-import { highlights, languages, profile } from '../data/profile';
+import { getProfileData } from '../lib/profile-data';
+import { getLocale, localizePath } from '../lib/i18n';
+
+const locale = getLocale(Astro.url.pathname);
+const english = locale === 'en-US';
+const { highlights, languages, profile } = getProfileData(locale);
 
 const informacoes = [
-  { rotulo: 'Nome', valor: profile.name },
-  { rotulo: 'E-mail', valor: profile.email, href: `mailto:${profile.email}` },
-  { rotulo: 'Localização', valor: 'Brasília, DF' },
-  { rotulo: 'Disponibilidade', valor: profile.workModes },
-  { rotulo: 'Idiomas', valor: languages.map((lang) => lang.name).join(' · ') },
+  { rotulo: english ? 'Name' : 'Nome', valor: profile.name },
+  { rotulo: english ? 'Email' : 'E-mail', valor: profile.email, href: `mailto:${profile.email}` },
+  { rotulo: english ? 'Location' : 'Localização', valor: 'Brasília, DF' },
+  { rotulo: english ? 'Availability' : 'Disponibilidade', valor: profile.workModes },
+  { rotulo: english ? 'Languages' : 'Idiomas', valor: languages.map((lang) => lang.name).join(' · ') },
+];
+const paragraphs = english ? [
+  'I’m a data analyst and developer based in Brasília. I started at TRE-DF, automating workflows with Python and building reports that informed management decisions. Alongside that work, I founded E-Habilita, now a live platform with payments, lesson tracking, and AI.',
+  'I enjoy problems that lead to decisions: the right question, the right query, and a dashboard that makes the result clear. In development, I carry that same approach through to the database design, integrations, and a live product.',
+  'I use AI daily for analysis and automation, and build it into products, such as the agent that assists users and validates registrations at E-Habilita.',
+] : [
+  'Sou Analista de Dados e desenvolvedor, de Brasília. Comecei no TRE-DF automatizando rotinas com Python e montando relatórios que a gestão usava para decidir. Em paralelo, fundei o E-Habilita, que hoje está no ar com pagamentos, rastreamento das aulas e IA.',
+  'Gosto de problema que termina em decisão: a pergunta certa, a query certa e um painel que explica o resultado sem precisar de legenda. No desenvolvimento, levo a mesma ideia até o fim, com banco modelado, integrações e o produto no ar.',
+  'Uso IA no dia a dia como ferramenta de análise e automação, e também dentro dos produtos, como no agente que atende e valida cadastros no E-Habilita.',
 ];
 ---
 
-<Base title={`Sobre · ${profile.name}`} description="Quem é Deyvid Prado: analista de dados e desenvolvedor em Brasília.">
+<Base title={`${english ? 'About' : 'Sobre'} · ${profile.name}`} description={english ? 'Meet Deyvid Prado, a data analyst and developer based in Brasília.' : 'Quem é Deyvid Prado: analista de dados e desenvolvedor em Brasília.'}>
   <div class="pagina">
-    <TituloSecao destaque="SOBRE" resto="MIM" subtitulo="Quem sou eu" />
+    <TituloSecao destaque={english ? 'ABOUT' : 'SOBRE'} resto={english ? 'ME' : 'MIM'} subtitulo={english ? 'Who I am' : 'Quem sou eu'} />
 
     <div class="grid gap-12 lg:grid-cols-[1fr_19rem] lg:gap-16">
       <div data-reveal>
         <h2 class="flex items-center gap-2 text-sm font-bold tracking-[0.14em] uppercase">
           <Icon name="user" class="size-4 text-brand" />
-          Sobre
+          {english ? 'About' : 'Sobre'}
         </h2>
         <div class="lede mt-6 space-y-4 text-muted">
-          <p>
-            Sou Analista de Dados e desenvolvedor, de Brasília. Comecei no TRE-DF automatizando rotinas com Python e
-            montando relatórios que a gestão usava para decidir. Em paralelo, fundei o E-Habilita, que hoje está no ar
-            com pagamentos, rastreamento das aulas e IA.
-          </p>
-          <p>
-            Gosto de problema que termina em decisão: a pergunta certa, a query certa e um painel que explica o resultado
-            sem precisar de legenda. No desenvolvimento, levo a mesma ideia até o fim, com banco modelado, integrações e
-            o produto no ar.
-          </p>
-          <p>
-            Uso IA no dia a dia como ferramenta de análise e automação, e também dentro dos produtos, como no agente que
-            atende e valida cadastros no E-Habilita.
-          </p>
+          {paragraphs.map((paragraph) => <p>{paragraph}</p>)}
         </div>
       </div>
 
       <aside data-reveal style="--i: 1">
         <h2 class="flex items-center gap-2 text-sm font-bold tracking-[0.14em] uppercase">
           <span class="h-4 w-0.5 bg-primary"></span>
-          Informações pessoais
+          {english ? 'Personal details' : 'Informações pessoais'}
         </h2>
         <dl class="mt-6 divide-y divide-base-300 border-y border-base-300 text-[0.9375rem]">
           {
@@ -67,9 +68,9 @@ const informacoes = [
 
         {
           profile.cvUrl && (
-            <a href={profile.cvUrl} class="btn btn-outline btn-sm mt-6" download>
-              <Icon name="download" class="size-4" />
-              Baixar CV
+            <a href={profile.cvUrl} class="btn btn-outline btn-sm mt-6" target="_blank" rel="noopener noreferrer" aria-label={english ? 'View resume (PDF in Portuguese, opens in a new tab)' : 'Ver currículo (PDF, abre em uma nova aba)'}>
+              <Icon name="external" class="size-4" />
+              {english ? 'View resume (PT-BR)' : 'Ver currículo'}
             </a>
           )
         }
@@ -79,7 +80,7 @@ const informacoes = [
     <section class="mt-16" aria-labelledby="numeros-titulo" data-reveal>
       <h2 id="numeros-titulo" class="flex items-center gap-2 text-sm font-bold tracking-[0.14em] uppercase">
         <Icon name="star" class="size-4 text-brand" />
-        Resultados em números
+        {english ? 'Results in numbers' : 'Resultados em números'}
       </h2>
 
       <div
@@ -88,7 +89,7 @@ const informacoes = [
         {
           highlights.map((item) => (
             <div class="stat gap-y-1 px-6 py-5">
-              <a href={item.href} class="stat-title text-sm text-muted transition-colors hover:text-brand">
+              <a href={localizePath(item.href, locale)} class="stat-title text-sm text-muted transition-colors hover:text-brand">
                 {item.source}
               </a>
               <p class="stat-value text-3xl font-semibold tracking-tight tabular-nums">{item.value}</p>

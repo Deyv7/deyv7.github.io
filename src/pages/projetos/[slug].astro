@@ -3,7 +3,8 @@ import { render } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
-import { categoryLabel, getProjects, statusLabel, type Project } from '../../lib/projects';
+import { getCategoryLabels, getProjects, getStatusLabels, type Project } from '../../lib/projects';
+import { getLocale, localizePath } from '../../lib/i18n';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
@@ -26,28 +27,32 @@ interface Props {
 }
 
 const { project, prev, next, related } = Astro.props;
+const locale = getLocale(Astro.url.pathname);
+const english = locale === 'en-US';
+const categoryLabel = getCategoryLabels(locale);
+const statusLabel = getStatusLabels(locale);
 const { Content } = await render(project);
 const d = project.data;
 
 const images = d.gallery.length > 0 ? d.gallery : d.cover ? [{ src: d.cover, alt: d.title }] : [];
 const categories = d.category.map((c) => categoryLabel[c]).join(' · ');
 const info = [
-  { label: 'Papel', value: d.role },
-  { label: 'Período', value: d.period },
+  { label: english ? 'Role' : 'Papel', value: d.role },
+  { label: english ? 'Period' : 'Período', value: d.period },
   { label: 'Status', value: statusLabel[d.status] },
-  { label: 'Código', value: d.private ? 'Privado' : 'Aberto no GitHub' },
+  { label: english ? 'Code' : 'Código', value: d.private ? (english ? 'Private' : 'Privado') : (english ? 'Open on GitHub' : 'Aberto no GitHub') },
 ];
 ---
 
 <Base title={`${d.title} · Deyvid Prado`} description={d.summary}>
   <article class="pagina">
     <a
-      href="/projetos/"
+      href={localizePath('/projetos/', locale)}
       class="entrada inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-base-content"
       style="--i: 0"
     >
       <Icon name="arrow-left" class="size-4" />
-      Todos os projetos
+      {english ? 'All projects' : 'Todos os projetos'}
     </a>
 
     <header class="mt-10 max-w-3xl">
@@ -62,7 +67,7 @@ const info = [
           <div class="entrada mt-8 flex flex-wrap gap-3" style="--i: 3">
             {d.links.demo && (
               <a class="btn btn-primary" href={d.links.demo} target="_blank" rel="noopener noreferrer">
-                Ver no ar
+                {english ? 'Visit website' : 'Ver no ar'}
                 <Icon name="external" class="size-4" />
               </a>
             )}
@@ -74,13 +79,13 @@ const info = [
                 rel="noopener noreferrer"
               >
                 <Icon name="github" class="size-4" />
-                Código no GitHub
+                {english ? 'Code on GitHub' : 'Código no GitHub'}
               </a>
             )}
             {d.links.pdf && (
               <a class="btn btn-outline" href={d.links.pdf} target="_blank" rel="noopener noreferrer">
                 <Icon name="file" class="size-4" />
-                Relatório em PDF
+                {english ? 'PDF report' : 'Relatório em PDF'}
               </a>
             )}
           </div>
@@ -90,7 +95,7 @@ const info = [
 
     {
       images.length > 0 && (
-        <section class="entrada mt-12" style="--i: 4" aria-label="Imagens do projeto" data-gallery-root>
+        <section class="entrada mt-12" style="--i: 4" aria-label={english ? 'Project images' : 'Imagens do projeto'} data-gallery-root>
           <div class="carousel w-full rounded-box" data-gallery>
             {images.map((shot, i) => (
               <figure class="carousel-item w-full flex-col">
@@ -125,10 +130,10 @@ const info = [
                 1 / {images.length}
               </p>
               <div class="join">
-                <button type="button" class="btn btn-sm join-item" data-gallery-prev aria-label="Imagem anterior">
+                <button type="button" class="btn btn-sm join-item" data-gallery-prev aria-label={english ? 'Previous image' : 'Imagem anterior'}>
                   <Icon name="arrow-left" class="size-4" />
                 </button>
-                <button type="button" class="btn btn-sm join-item" data-gallery-next aria-label="Próxima imagem">
+                <button type="button" class="btn btn-sm join-item" data-gallery-next aria-label={english ? 'Next image' : 'Próxima imagem'}>
                   <Icon name="arrow-right" class="size-4" />
                 </button>
               </div>
@@ -158,7 +163,7 @@ const info = [
 
       <aside class="space-y-10" data-reveal style="--i: 1">
         <section aria-labelledby="info-title">
-          <h2 id="info-title" class="text-lg font-semibold">Informações gerais</h2>
+          <h2 id="info-title" class="text-lg font-semibold">{english ? 'Project details' : 'Informações gerais'}</h2>
           <dl class="mt-3 divide-y divide-base-300 border-y border-base-300 text-[0.9375rem]">
             {
               info.map((item) => (
@@ -172,7 +177,7 @@ const info = [
         </section>
 
         <section aria-labelledby="tech-title">
-          <h2 id="tech-title" class="text-lg font-semibold">Tecnologias</h2>
+          <h2 id="tech-title" class="text-lg font-semibold">{english ? 'Technologies' : 'Tecnologias'}</h2>
           <ul class="mt-3 divide-y divide-base-300 border-y border-base-300">
             {
               d.stack.map((tech) => (
@@ -189,12 +194,12 @@ const info = [
           related.length > 0 && (
             <section aria-labelledby="relacionados-title">
               <h2 id="relacionados-title" class="text-lg font-semibold">
-                {related.length === 1 ? 'Projeto relacionado' : 'Projetos relacionados'}
+                {english ? (related.length === 1 ? 'Related project' : 'Related projects') : (related.length === 1 ? 'Projeto relacionado' : 'Projetos relacionados')}
               </h2>
               <ul class="mt-3 space-y-2">
                 {related.map((item) => (
                   <li>
-                    <a class="inline-flex items-center gap-1.5 text-brand hover:underline" href={`/projetos/${item.id}/`}>
+                    <a class="inline-flex items-center gap-1.5 text-brand hover:underline" href={localizePath(`/projetos/${item.id}/`, locale)}>
                       {item.data.title}
                       <Icon name="arrow-right" class="size-4" />
                     </a>
@@ -207,13 +212,13 @@ const info = [
       </aside>
     </div>
 
-    <nav class="mt-20 grid gap-6 border-t border-base-300 pt-8 sm:grid-cols-2" aria-label="Outros projetos" data-reveal>
+    <nav class="mt-20 grid gap-6 border-t border-base-300 pt-8 sm:grid-cols-2" aria-label={english ? 'Other projects' : 'Outros projetos'} data-reveal>
       {
         prev ? (
-          <a href={`/projetos/${prev.id}/`} class="group">
+          <a href={localizePath(`/projetos/${prev.id}/`, locale)} class="group">
             <span class="flex items-center gap-1.5 text-sm text-muted">
               <Icon name="arrow-left" class="size-4" />
-              Anterior
+              {english ? 'Previous' : 'Anterior'}
             </span>
             <span class="mt-1 block font-semibold transition-colors group-hover:text-brand">{prev.data.title}</span>
           </a>
@@ -223,9 +228,9 @@ const info = [
       }
       {
         next && (
-          <a href={`/projetos/${next.id}/`} class="group sm:text-right">
+          <a href={localizePath(`/projetos/${next.id}/`, locale)} class="group sm:text-right">
             <span class="flex items-center gap-1.5 text-sm text-muted sm:justify-end">
-              Próximo
+              {english ? 'Next' : 'Próximo'}
               <Icon name="arrow-right" class="size-4" />
             </span>
             <span class="mt-1 block font-semibold transition-colors group-hover:text-brand">{next.data.title}</span>

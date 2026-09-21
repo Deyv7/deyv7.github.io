@@ -2,28 +2,32 @@
 import Base from '../../layouts/Base.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import TituloSecao from '../../components/TituloSecao.astro';
-import { categoryLabel, getProjects, type Category } from '../../lib/projects';
+import { getCategoryLabels, getProjects, type Category } from '../../lib/projects';
 import { profile } from '../../data/profile';
+import { getLocale } from '../../lib/i18n';
 
-const projects = await getProjects();
+const locale = getLocale(Astro.url.pathname);
+const english = locale === 'en-US';
+const categoryLabel = getCategoryLabels(locale);
+const projects = await getProjects(locale);
 const categories = Object.keys(categoryLabel) as Category[];
 ---
 
 <Base
-  title={`Portfólio · ${profile.name}`}
-  description="Análises, produtos e automações feitos por Deyvid Prado: dados, software e IA."
+  title={`${english ? 'Portfolio' : 'Portfólio'} · ${profile.name}`}
+  description={english ? 'Analysis, products, and automation by Deyvid Prado: data, software, and AI.' : 'Análises, produtos e automações feitos por Deyvid Prado: dados, software e IA.'}
 >
   <div class="pagina">
-    <TituloSecao destaque="PORTFÓLIO" subtitulo="Trabalhos realizados" />
+    <TituloSecao destaque={english ? 'PORTFOLIO' : 'PORTFÓLIO'} subtitulo={english ? 'Selected work' : 'Trabalhos realizados'} />
 
     <div class="entrada mb-10 flex border-b border-base-300 pb-5" style="--i: 1">
-      <div class="flex flex-wrap gap-2" role="radiogroup" aria-label="Filtrar projetos por área">
+      <div class="flex flex-wrap gap-2" role="radiogroup" aria-label={english ? 'Filter projects by field' : 'Filtrar projetos por área'}>
         <label class="cursor-pointer">
           <input type="radio" name="filtro-projetos" class="peer sr-only" value="todos" checked />
           <span
             class="block px-5 py-2.5 text-sm font-semibold tracking-wide uppercase text-muted transition-colors peer-checked:bg-primary peer-checked:text-primary-content peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary hover:text-base-content"
           >
-            Tudo
+            {english ? 'All' : 'Tudo'}
           </span>
         </label>
         {
@@ -39,13 +43,13 @@ const categories = Object.keys(categoryLabel) as Category[];
       </div>
     </div>
 
-    <p class="sr-only" aria-live="polite" data-filter-status></p>
+    <p class="sr-only" aria-live="polite" data-filter-status data-singular={english ? 'project' : 'projeto'} data-plural={english ? 'projects' : 'projetos'}></p>
 
     <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-project-grid>
       {
         projects.map((project, index) => (
           <li data-reveal style={`--i: ${index % 3}`} data-category={project.data.category.join(' ')}>
-            <ProjectCard project={project} index={index} />
+            <ProjectCard project={project} index={index} locale={locale} />
           </li>
         ))
       }
@@ -57,7 +61,7 @@ const categories = Object.keys(categoryLabel) as Category[];
   document.addEventListener('astro:page-load', () => {
     const grid = document.querySelector('[data-project-grid]');
     if (!grid) return;
-    const status = document.querySelector('[data-filter-status]');
+    const status = document.querySelector<HTMLElement>('[data-filter-status]');
 
     for (const input of document.querySelectorAll<HTMLInputElement>('input[name="filtro-projetos"]')) {
       input.addEventListener('change', () => {
@@ -72,7 +76,7 @@ const categories = Object.keys(categoryLabel) as Category[];
           item.classList.add('filtrado', 'visivel');
           visible++;
         }
-        if (status) status.textContent = `${visible} ${visible === 1 ? 'projeto' : 'projetos'}`;
+        if (status) status.textContent = `${visible} ${visible === 1 ? status.dataset.singular : status.dataset.plural}`;
       });
     }
   });

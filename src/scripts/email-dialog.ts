@@ -144,6 +144,20 @@ function initEmailDialog() {
     close(true);
   }, { signal });
 
+  dialog.addEventListener('keydown', (event) => {
+    if (event.key !== 'Tab' || !dialog.open) return;
+    const focusable = [...dialog.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input:not([disabled])')];
+    const first = focusable[0];
+    const last = focusable.at(-1);
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last?.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first?.focus();
+    }
+  }, { signal });
+
   dialog.addEventListener('close', () => {
     // An earlier close event can arrive after a fresh opening.
     if (!dialog.open) reset(!disposed);
@@ -169,16 +183,16 @@ function initEmailDialog() {
     const generation = ++copyGeneration;
     const isCurrent = () => !disposed && dialog.open && !closing && generation === copyGeneration;
     copy.disabled = true;
-    status.textContent = 'Copiando e-mail…';
+    status.textContent = dialog.dataset.copyPending ?? 'Copiando e-mail…';
     try {
       if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
       await navigator.clipboard.writeText(email);
-      if (isCurrent()) status.textContent = 'E-mail copiado!';
+      if (isCurrent()) status.textContent = dialog.dataset.copySuccess ?? 'E-mail copiado!';
     } catch {
       if (isCurrent()) {
         address.focus({ preventScroll: true });
         address.select();
-        status.textContent = 'Não foi possível copiar automaticamente. Copie o endereço selecionado manualmente.';
+        status.textContent = dialog.dataset.copyError ?? 'Não foi possível copiar automaticamente. Copie o endereço selecionado manualmente.';
       }
     } finally {
       if (isCurrent()) copy.disabled = false;
