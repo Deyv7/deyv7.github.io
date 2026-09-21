@@ -7,8 +7,8 @@ const english = getLocale(Astro.url.pathname) === 'en-US';
 
 const email = encodeURIComponent(profile.email);
 const providers = [
-  { name: 'Gmail', initial: 'G', href: `https://mail.google.com/mail/?view=cm&fs=1&to=${email}` },
-  { name: 'Outlook', initial: 'O', href: `https://outlook.live.com/mail/0/deeplink/compose?to=${email}` },
+  { name: 'Gmail', icon: '/icons/gmail.svg', href: `https://mail.google.com/mail/?view=cm&fs=1&to=${email}` },
+  { name: 'Outlook', icon: '/icons/outlook.svg', href: `https://outlook.live.com/mail/0/deeplink/compose?to=${email}` },
 ];
 ---
 
@@ -41,7 +41,9 @@ const providers = [
     <div class="mt-5 grid gap-2">
       {providers.map((provider) => (
         <a href={provider.href} class="email-option" target="_blank" rel="noopener noreferrer" data-email-provider>
-          <span class="email-option-icon font-bold" aria-hidden="true">{provider.initial}</span>
+          <span class="email-option-icon" aria-hidden="true">
+            <img src={provider.icon} alt="" width="28" height="28" class="size-7 object-contain" />
+          </span>
           <span class="flex-1">
             <span class="block font-semibold">{english ? 'Open' : 'Abrir'} {provider.name}</span>
             <span class="block text-xs text-muted">{english ? 'Compose in a new tab' : 'Escrever em uma nova aba'}</span>
