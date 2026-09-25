@@ -8,7 +8,7 @@ gallery:
     alt: Fluxo da validação de cadastro, do envio dos documentos até a aprovação ou a revisão humana
 role: Desenvolvedor
 period: mai 2026
-status: producao
+status: no-ar
 private: true
 metrics:
   - { value: "2", label: "agentes: suporte e validação de cadastro" }
