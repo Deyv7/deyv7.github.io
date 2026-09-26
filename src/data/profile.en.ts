@@ -25,8 +25,8 @@ export const nav = [
 export const highlights = [
   { ...pt.highlights[0], label: 'employee departures analyzed', source: 'NovaCasa case study' },
   { ...pt.highlights[1], label: 'of departures within 90 days', source: 'NovaCasa case study' },
-  { ...pt.highlights[2], label: 'less manual work each week', source: 'TRE-DF internship' },
-  { ...pt.highlights[3], label: 'staff members using the reports', source: 'TRE-DF internship' },
+  { ...pt.highlights[2], label: 'PostgreSQL tables modeled', source: 'E-Habilita' },
+  { ...pt.highlights[3], label: 'automated tests in CI', source: 'E-Habilita' },
 ];
 
 export const experience: Job[] = [
@@ -57,10 +57,10 @@ export const experience: Job[] = [
     title: 'IT, Support, and Development Intern',
     place: 'Brasília, on-site',
     points: [
-      'Automated 3+ data collection, organization, and reporting workflows with Python, reducing the team’s weekly manual work by about 30%',
-      'Built recurring reports used by 200+ staff members to support management decisions',
-      'Turned requests from managers into analyses, reports, and automations with technical autonomy',
-      'Developed and maintained 2+ internal systems used during peak election periods',
+      'Extracted data from the court’s systems with SQL queries for analyses and reports',
+      'Wrote Python scripts to automate repetitive data collection and cleaning tasks, saving the team time',
+      'Prepared reports for managers and cleaned data in Excel spreadsheets',
+      'Provided user support and maintained internal systems, under confidentiality rules for election-process systems',
     ],
   },
 ];

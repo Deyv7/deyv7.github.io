@@ -33,8 +33,8 @@ export const nav = [
 export const highlights = [
   { value: '603', label: 'desligamentos analisados', source: 'Case NovaCasa', href: '/projetos/novacasa-people-analytics/' },
   { value: '48%', label: 'das saídas em até 90 dias', source: 'Case NovaCasa', href: '/projetos/novacasa-people-analytics/' },
-  { value: '~30%', label: 'menos tempo manual por semana', source: 'Estágio no TRE-DF', href: '/curriculo/' },
-  { value: '200+', label: 'servidores usando os relatórios', source: 'Estágio no TRE-DF', href: '/curriculo/' },
+  { value: '12+', label: 'tabelas modeladas em PostgreSQL', source: 'E-Habilita', href: '/projetos/e-habilita/' },
+  { value: '73', label: 'testes automatizados no CI', source: 'E-Habilita', href: '/projetos/e-habilita/' },
 ];
 
 export interface Job {
@@ -76,17 +76,17 @@ export const experience: Job[] = [
     org: 'TRE-DF',
     place: 'Brasília, presencial',
     points: [
-      'Automatizei 3+ rotinas de coleta, organização e relatórios com Python, reduzindo ~30% do tempo manual semanal da equipe',
-      'Construí relatórios periódicos usados por 200+ servidores em decisões de gestão',
-      'Traduzi demandas diretas de gestores em análises, relatórios e automações, com autonomia técnica',
-      'Desenvolvi e mantive 2+ sistemas internos usados nos períodos de alta demanda eleitoral',
+      'Extraí dados dos sistemas do tribunal com consultas SQL para análises e relatórios',
+      'Criei scripts em Python para automatizar tarefas repetitivas de coleta e tratamento de dados, economizando tempo da equipe',
+      'Preparei relatórios para gestores e tratei dados em planilhas Excel',
+      'Atuei em suporte, atendimento a usuários e manutenção de sistemas internos, sob regras de confidencialidade em sistemas do processo eleitoral',
     ],
   },
 ];
 
 export const education = [
-  { period: '2024 — 2025', title: 'Técnico em Ciência de Dados', org: 'Universidade Federal de Goiás (UFG)' },
-  { period: '2023', title: 'Análise e Desenvolvimento de Sistemas', org: 'Centro Universitário IESB' },
+  { period: '2024 — 2025', title: 'Técnico em Ciência de Dados', org: 'Escola do Futuro de Goiás (EFG, gestão UFG)' },
+  { period: '2023 — 2025', title: 'Análise e Desenvolvimento de Sistemas', org: 'Centro Universitário IESB' },
 ];
 
 export const certifications = [

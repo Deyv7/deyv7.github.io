@@ -8,7 +8,7 @@ gallery:
     alt: Registration validation workflow, from document submission to approval or human review
 role: Developer
 period: May 2026
-status: producao
+status: no-ar
 private: true
 metrics:
   - { value: "2", label: "agents for support and registration validation" }
