@@ -22,6 +22,7 @@ metrics:
   - { value: "12+", label: "PostgreSQL tables modeled" }
   - { value: "3", label: "dashboards for students, instructors, and administrators" }
   - { value: "Web + app", label: "Next.js in the browser, Expo on mobile" }
+  - { value: "73", label: "automated tests running in CI" }
 stack:
   - { name: Next.js 16 + React 19, role: "Web application with App Router and role-specific dashboards" }
   - { name: Expo / React Native, role: "Mobile app with camera, geolocation, maps, and notifications" }
@@ -31,6 +32,7 @@ stack:
   - { name: TypeScript, role: "End-to-end typing across the web and mobile apps" }
   - { name: Tailwind CSS v4, role: "Web application interface" }
   - { name: Sentry, role: "Application error monitoring" }
+  - { name: GitHub Actions, role: "CI running the API route tests and type checking on every push" }
 links:
   demo: https://e-habilita.com.br
 related: [ai-ehabilita]
@@ -50,6 +52,7 @@ I founded the platform and developed the product end to end:
 - **Trust:** instructor face verification uses TensorFlow.js with the BlazeFace model and generates an automatic confidence score that feeds an approval workflow.
 - **Lessons:** real-time GPS tracking and route reports with calculated distance and duration.
 - **Channels:** a Next.js website with student, instructor, and administrator dashboards, plus an Expo mobile app.
+- **Reliability:** 73 automated tests for the API routes — authorization, uploads, password recovery, and account cleanup — run in CI on every push, alongside type checking.
 
 ## Result
 
