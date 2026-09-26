@@ -41,7 +41,7 @@ const projects = (await getProjects(locale)).slice(0, 3);
         <a href={localizePath('/projetos/', locale)} class="btn btn-primary">{english ? 'View portfolio' : 'Ver portfólio'}</a>
         {
           profile.cvUrl && (
-            <a href={profile.cvUrl} class="btn btn-outline" target="_blank" rel="noopener noreferrer" aria-label={english ? 'View resume (PDF in Portuguese, opens in a new tab)' : 'Ver currículo (PDF, abre em uma nova aba)'}>
+            <a href={profile.cvUrl} class="btn btn-outline" target="_blank" rel="noopener noreferrer" aria-label={english ? 'View resume (PDF, opens in a new tab)' : 'Ver currículo (PDF, abre em uma nova aba)'}>
               <Icon name="external" class="size-4" />
               {english ? 'View resume (PT-BR)' : 'Ver currículo'}
             </a>

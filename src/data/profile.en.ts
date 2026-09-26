@@ -4,6 +4,7 @@ import type { Job } from './profile';
 export const profile = {
   ...pt.profile,
   headline: 'Data Analyst & Developer',
+  cvUrl: '/cv-deyvid-prado-en.pdf' as string | null,
   roles: ['a Data Analyst', 'a Full-Stack Developer', 'an AI Developer'],
   description:
     'Data analyst and developer. I use SQL, Power BI, and Python to solve real problems and build systems that are live today.',
