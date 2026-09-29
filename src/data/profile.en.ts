@@ -78,8 +78,8 @@ export const certifications = [
 ];
 
 export const skills = [
-  { group: 'Data & BI', items: ['Power BI', 'DAX', 'Dimensional modeling', 'ETL', 'Advanced Excel', 'Google Sheets', 'Databricks'] },
-  { group: 'SQL & databases', items: ['SQL', 'Relational modeling', 'PostgreSQL', 'SQL Server', 'MySQL', 'MongoDB', 'Supabase'] },
+  { group: 'Data & BI', items: ['Power BI', 'DAX', 'Power Query', 'dbt', 'Data quality testing', 'Dimensional modeling', 'ETL', 'Advanced Excel', 'Google Sheets', 'Databricks'] },
+  { group: 'SQL & databases', items: ['SQL', 'Relational modeling', 'PostgreSQL', 'BigQuery', 'SQL Server', 'MySQL', 'MongoDB', 'Supabase'] },
   { group: 'Python & analytics', items: ['Python', 'Pandas', 'NumPy', 'Streamlit', 'Exploratory data analysis', 'R'] },
   { group: 'Development', items: ['TypeScript', 'Next.js', 'React Native / Expo', 'Node.js / Express', 'FastAPI', 'REST APIs', 'Git'] },
   { group: 'Applied AI', items: ['ChatGPT', 'Gemini', 'Agents with Agno', 'TensorFlow.js', 'OpenCV', 'MediaPipe'] },
