@@ -82,7 +82,7 @@ export const skills = [
   { group: 'SQL & databases', items: ['SQL', 'Relational modeling', 'PostgreSQL', 'SQL Server', 'MySQL', 'MongoDB', 'Supabase'] },
   { group: 'Python & analytics', items: ['Python', 'Pandas', 'NumPy', 'Streamlit', 'Exploratory data analysis', 'R'] },
   { group: 'Development', items: ['TypeScript', 'Next.js', 'React Native / Expo', 'Node.js / Express', 'FastAPI', 'REST APIs', 'Git'] },
-  { group: 'Applied AI', items: ['Claude', 'ChatGPT', 'Gemini', 'Agents with Agno', 'TensorFlow.js', 'OpenCV', 'MediaPipe'] },
+  { group: 'Applied AI', items: ['ChatGPT', 'Gemini', 'Agents with Agno', 'TensorFlow.js', 'OpenCV', 'MediaPipe'] },
 ];
 
 export const languages = [

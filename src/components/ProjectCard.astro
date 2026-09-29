@@ -22,9 +22,10 @@ const categorias = d.category.map((c) => categoryLabel[c]).join(' · ');
 
 <a
   href={localizePath(`/projetos/${project.id}/`, locale)}
+  aria-describedby={d.disclaimer ? `disclaimer-${project.id}` : undefined}
   class="group block h-full overflow-hidden rounded-box border border-base-300 bg-base-200 transition-colors hover:border-primary/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
 >
-  <div class="aspect-4/3 w-full overflow-hidden border-b border-base-300">
+  <div class="relative aspect-4/3 w-full overflow-hidden border-b border-base-300" title={d.disclaimer}>
     {
       d.cover ? (
         d.cover.format === 'svg' ? (
@@ -50,6 +51,11 @@ const categorias = d.category.map((c) => categoryLabel[c]).join(' · ');
         <ProjectCover project={project} />
       )
     }
+    {d.disclaimer && (
+      <span id={`disclaimer-${project.id}`} class="project-disclaimer absolute inset-x-3 bottom-3 rounded-lg border border-base-300 bg-base-100 p-3 text-xs leading-relaxed text-base-content shadow-sm">
+        {d.disclaimer}
+      </span>
+    )}
   </div>
 
   <div class="p-5">
@@ -64,3 +70,11 @@ const categorias = d.category.map((c) => categoryLabel[c]).join(' · ');
     </div>
   </div>
 </a>
+
+<style>
+  @media (hover: hover) and (pointer: fine) {
+    .project-disclaimer { opacity: 0; }
+    a:hover .project-disclaimer,
+    a:focus-visible .project-disclaimer { opacity: 1; }
+  }
+</style>

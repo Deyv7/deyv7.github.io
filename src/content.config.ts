@@ -11,6 +11,7 @@ const projectCollection = (base: string) => defineCollection({
       category: z.array(z.enum(['dados', 'software', 'ia'])).min(1),
       /** Imagem do card (16:10). Sem ela, o card mostra um bloco neutro com o título */
       cover: image().optional(),
+      disclaimer: z.string().optional(),
       /** Imagens da página do projeto. Sem galeria, a página usa a capa */
       gallery: z.array(z.object({ src: image(), alt: z.string() })).default([]),
       role: z.string(),

@@ -5,6 +5,7 @@ import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
 import { getCategoryLabels, getProjects, getStatusLabels, type Project } from '../../lib/projects';
 import { getLocale, localizePath } from '../../lib/i18n';
+import { getStackIcons } from '../../lib/stack-icons';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
@@ -99,7 +100,7 @@ const info = [
           <div class="carousel w-full rounded-box" data-gallery>
             {images.map((shot, i) => (
               <figure class="carousel-item w-full flex-col">
-                <div class="overflow-hidden rounded-box border border-base-300 bg-base-200">
+                <div class="overflow-hidden rounded-box border border-base-300 bg-base-200" title={d.disclaimer}>
                   {shot.src.format === 'svg' ? (
                     <img
                       src={shot.src.src}
@@ -124,6 +125,7 @@ const info = [
               </figure>
             ))}
           </div>
+          {d.disclaimer && <p class="mt-3 text-sm text-muted">{d.disclaimer}</p>}
           {images.length > 1 && (
             <div class="mt-3 flex items-center justify-end gap-3">
               <p class="text-sm text-muted tabular-nums" data-gallery-count>
@@ -182,7 +184,16 @@ const info = [
             {
               d.stack.map((tech) => (
                 <li class="py-3">
-                  <p class="font-medium">{tech.name}</p>
+                  <p class="flex items-center gap-2 font-medium">
+                    {getStackIcons(tech.name).map((icon) =>
+                      'svg' in icon ? (
+                        <span class="inline-flex size-5 shrink-0 [&>svg]:size-full" set:html={icon.svg} />
+                      ) : (
+                        <img class="size-5 shrink-0" src={icon.src} alt="" width="20" height="20" loading="lazy" />
+                      ),
+                    )}
+                    {tech.name}
+                  </p>
                   <p class="mt-0.5 text-sm text-muted">{tech.role}</p>
                 </li>
               ))
