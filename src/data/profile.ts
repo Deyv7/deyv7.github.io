@@ -72,14 +72,16 @@ export const experience: Job[] = [
   },
   {
     period: 'fev 2024 — set 2025',
-    title: 'Estagiário de TI, Suporte e Desenvolvimento',
+    title: 'Estagiário de TI, Suporte N1/N2',
     org: 'TRE-DF',
     place: 'Brasília, presencial',
     points: [
-      'Extraí dados dos sistemas do tribunal com consultas SQL para análises e relatórios',
-      'Criei scripts em Python para automatizar tarefas repetitivas de coleta e tratamento de dados, economizando tempo da equipe',
-      'Preparei relatórios para gestores e tratei dados em planilhas Excel',
-      'Atuei em suporte, atendimento a usuários e manutenção de sistemas internos, sob regras de confidencialidade em sistemas do processo eleitoral',
+      'Atendi usuários do tribunal no suporte de TI N1 e N2, presencialmente e por atendimento online com acesso remoto',
+      'Registrei, classifiquei e acompanhei chamados no GLPI, escalando para as equipes especializadas o que fugia do escopo',
+      'Redefini senhas, desbloqueei contas e configurei e-mail e acessos a pastas e sistemas',
+      'Instalei, configurei e fiz manutenção de impressoras e periféricos',
+      'Instalei e atualizei softwares e resolvi problemas de hardware, sistema operacional e rede, incluindo configuração de proxy',
+      'Formatei e preparei computadores e os ingressei no domínio da rede do tribunal',
     ],
   },
 ];
