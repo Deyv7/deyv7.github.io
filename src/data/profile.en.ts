@@ -55,13 +55,15 @@ export const experience: Job[] = [
   {
     ...pt.experience[2],
     period: 'Feb 2024 — Sep 2025',
-    title: 'IT, Support, and Development Intern',
+    title: 'IT Support Intern (Tier 1/Tier 2)',
     place: 'Brasília, on-site',
     points: [
-      'Extracted data from the court’s systems with SQL queries for analyses and reports',
-      'Wrote Python scripts to automate repetitive data collection and cleaning tasks, saving the team time',
-      'Prepared reports for managers and cleaned data in Excel spreadsheets',
-      'Provided user support and maintained internal systems, under confidentiality rules for election-process systems',
+      'Supported the court’s users at tier 1 and tier 2, in person and online through remote access',
+      'Logged, triaged, and tracked tickets in GLPI, escalating out-of-scope issues to specialized teams',
+      'Reset passwords, unlocked accounts, and set up email and access to shared folders and systems',
+      'Installed, configured, and maintained printers and peripherals',
+      'Installed and updated software and fixed hardware, operating system, and network issues, including proxy settings',
+      'Reimaged and prepared computers and joined them to the court’s network domain',
     ],
   },
 ];
