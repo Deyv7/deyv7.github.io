@@ -22,10 +22,10 @@ function animateHome(root: HTMLElement, gsap: Gsap, ScrollTrigger: ScrollPlugin)
   const seenCards = new WeakSet<Element>();
   let introFinished = false;
 
+  // O matchMedia do GSAP só chama a função quando alguma condição casa; as duas
+  // juntas cobrem todo caso, então ela sempre roda e decide pelo `reduced`.
   media.add({
-    desktop: '(min-width: 768px)',
-    mobile: '(max-width: 767px)',
-    pointer: '(min-width: 768px) and (hover: hover) and (pointer: fine)',
+    motion: '(prefers-reduced-motion: no-preference)',
     reduced: '(prefers-reduced-motion: reduce)',
   }, (context) => {
     if (context.conditions?.reduced) {
@@ -34,71 +34,27 @@ function animateHome(root: HTMLElement, gsap: Gsap, ScrollTrigger: ScrollPlugin)
     }
 
     const hero = root.querySelector<HTMLElement>('[data-home-hero]')!;
-    const entrance = root.querySelector<HTMLElement>('[data-network-entrance]')!;
-    const scrolling = root.querySelector<HTMLElement>('[data-network-scroll]')!;
-    const pointer = root.querySelector<HTMLElement>('[data-network-pointer]')!;
     const listeners = new AbortController();
-    const loops: (Tween | Timeline)[] = [];
     const reveals: { tween: Tween; requested: boolean }[] = [];
     let disposed = false;
     let loaderReady = false;
     let releaseTimer: number;
-    let bounds = { top: 0, left: 0, width: 1, height: 1 };
     let heroVisible = hero.getBoundingClientRect().bottom > 0;
-    let xTo: ReturnType<Gsap['quickTo']> | undefined;
-    let yTo: ReturnType<Gsap['quickTo']> | undefined;
 
-    const intro = gsap.timeline({ paused: true, onComplete: () => { introFinished = true; } });
+    const intro: Timeline = gsap.timeline({ paused: true, onComplete: () => { introFinished = true; } });
     if (!introFinished) {
-      intro.from(entrance, { autoAlpha: 0, duration: 0.6, ease: 'power2.out' }, 0)
-        .from(root.querySelectorAll('[data-home-intro]'), {
-          autoAlpha: 0, y: 10, duration: 0.35, stagger: 0.06, ease: 'power3.out',
-        }, 0.06);
+      intro.from(root.querySelectorAll('[data-home-intro]'), {
+        autoAlpha: 0, y: 10, duration: 0.35, stagger: 0.06, ease: 'power3.out',
+      }, 0.06);
     }
-
-    root.querySelectorAll('[data-network-float]').forEach((group, index) => {
-      loops.push(gsap.to(group, {
-        x: index ? -3 : 3, y: index ? -6 : 6,
-        duration: index ? 14 : 10, repeat: -1, yoyo: true, ease: 'sine.inOut', paused: true,
-      }));
-    });
-
-    root.querySelectorAll<SVGCircleElement>('[data-network-pulse]').forEach((pulse, index) => {
-      if (context.conditions?.mobile && pulse.classList.contains('network-desktop')) return;
-      const duration = 3.2 + index * 0.3;
-      const timeline = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 1.2, delay: index * 0.65 });
-      timeline.fromTo(pulse, { x: 0, y: 0 }, {
-        x: Number(pulse.dataset.dx), y: Number(pulse.dataset.dy), duration, ease: 'none',
-      }, 0).to(pulse, { opacity: 0.85, duration: 0.3 }, 0)
-        .to(pulse, { opacity: 0, duration: 0.3 }, duration - 0.3);
-      loops.push(timeline);
-    });
-
-    const scrollTween = gsap.to(scrolling, {
-      y: -32, opacity: 0, ease: 'none',
-      scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.5 },
-    });
-    const scrollTrigger = scrollTween.scrollTrigger!;
-    let scrollEnabled = true;
 
     const canPlay = () => loaderReady && !document.hidden && !document.documentElement.hasAttribute('data-loading');
     const sync = () => {
       if (disposed) return;
       const ready = canPlay();
-      const ambient = ready && heroVisible;
-      root.dataset.motionState = ambient ? 'running' : 'paused';
-      for (const loop of loops) loop.paused(!ambient);
-      if (!introFinished) intro.paused(!ambient);
+      root.dataset.motionState = ready && heroVisible ? 'running' : 'paused';
+      if (!introFinished) intro.paused(!(ready && heroVisible));
       for (const reveal of reveals) reveal.tween.paused(!(ready && reveal.requested));
-      if (!ambient) {
-        xTo?.tween.pause();
-        yTo?.tween.pause();
-      }
-      if (scrollEnabled !== ready) {
-        scrollEnabled = ready;
-        if (ready) scrollTrigger.enable(false, false);
-        else scrollTrigger.disable(false);
-      }
     };
 
     root.querySelectorAll<HTMLElement>('[data-home-project]').forEach((card, index) => {
@@ -120,28 +76,6 @@ function animateHome(root: HTMLElement, gsap: Gsap, ScrollTrigger: ScrollPlugin)
         },
       });
     });
-
-    const measure = () => {
-      const rect = hero.getBoundingClientRect();
-      bounds = { top: rect.top + window.scrollY, left: rect.left + window.scrollX, width: rect.width, height: rect.height };
-    };
-    measure();
-    const resizeObserver = new ResizeObserver(measure);
-    resizeObserver.observe(hero);
-
-    if (context.conditions?.pointer) {
-      xTo = gsap.quickTo(pointer, 'x', { duration: 0.65, ease: 'power3.out' });
-      yTo = gsap.quickTo(pointer, 'y', { duration: 0.65, ease: 'power3.out' });
-      hero.addEventListener('pointerenter', measure, { signal: listeners.signal });
-      hero.addEventListener('pointermove', (event) => {
-        if (!canPlay() || !heroVisible) return;
-        xTo!(gsap.utils.clamp(-8, 8, ((event.pageX - bounds.left) / bounds.width - 0.5) * 16));
-        yTo!(gsap.utils.clamp(-8, 8, ((event.pageY - bounds.top) / bounds.height - 0.5) * 16));
-      }, { signal: listeners.signal, passive: true });
-      hero.addEventListener('pointerleave', () => {
-        if (canPlay()) { xTo!(0); yTo!(0); }
-      }, { signal: listeners.signal });
-    }
 
     const observer = new IntersectionObserver(([entry]) => {
       heroVisible = entry.isIntersecting && entry.intersectionRatio > 0;
@@ -167,7 +101,7 @@ function animateHome(root: HTMLElement, gsap: Gsap, ScrollTrigger: ScrollPlugin)
     loadingChanged(document.documentElement.hasAttribute('data-loading'));
 
     void document.fonts.ready.then(() => {
-      if (!disposed) { measure(); ScrollTrigger.refresh(); }
+      if (!disposed) ScrollTrigger.refresh();
     });
 
     return () => {
@@ -175,7 +109,6 @@ function animateHome(root: HTMLElement, gsap: Gsap, ScrollTrigger: ScrollPlugin)
       window.clearTimeout(releaseTimer);
       listeners.abort();
       observer.disconnect();
-      resizeObserver.disconnect();
       delete root.dataset.motionState;
     };
   }, root);
