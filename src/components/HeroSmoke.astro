@@ -1,0 +1,39 @@
+---
+// Fumaça da capa. A força é baixa de propósito: o fundo segue
+// neutro e a fumaça só dá textura, tom sobre tom.
+---
+
+<canvas class="hero-smoke" aria-hidden="true" data-hero-smoke data-forca="0.11"></canvas>
+
+<style>
+  .hero-smoke {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* Fundo e tinta da fumaça: lidos pelo script, seguem o tema. */
+    background: var(--color-base-100);
+    color: var(--color-base-content);
+    opacity: 0;
+    transition: opacity 600ms ease;
+  }
+</style>
+
+<script>
+  import { iniciarFumaca } from '../scripts/hero-smoke';
+
+  let limpar = () => {};
+
+  const iniciar = () => {
+    limpar();
+    const canvas = document.querySelector<HTMLCanvasElement>('[data-hero-smoke]');
+    limpar = canvas ? iniciarFumaca(canvas, Number(canvas.dataset.forca) || 0.11) : () => {};
+  };
+
+  document.addEventListener('astro:page-load', iniciar);
+  document.addEventListener('astro:before-swap', () => {
+    limpar();
+    limpar = () => {};
+  });
+</script>
