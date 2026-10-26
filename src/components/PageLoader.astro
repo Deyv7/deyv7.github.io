@@ -32,6 +32,10 @@ const english = getLocale(Astro.url.pathname) === 'en-US';
   const ESPERA_VOO_MS = 1200;
   const VITRINE_MS = 1400;
   const VOO_MS = 800;
+  // Atraso antes de a tela aparecer (o mesmo 1 s do CSS) e o tempo que ela
+  // fica, no mínimo, depois de aparecer.
+  const APARECE_APOS_MS = 1000;
+  const MINIMO_VISIVEL_MS = 300;
   let active = false;
   let started = performance.now();
   let revision = 0;
@@ -218,8 +222,13 @@ const english = getLocale(Astro.url.pathname) === 'en-US';
     // o data-voo só sai quando a abertura começa, então os dois concordam.
     const flying = document.documentElement.hasAttribute('data-voo');
     window.clearTimeout(closing);
-    const minimum = flying ? ESPERA_VOO_MS : 450;
-    const remaining = reducedMotion.matches ? 0 : Math.max(0, minimum - (performance.now() - started));
+    // Sem tempo mínimo artificial: a tela só aparece depois de APARECE_APOS_MS
+    // (CSS). Se já apareceu, fica um pouco mais para não piscar na saída.
+    const elapsed = performance.now() - started;
+    const minimum = flying
+      ? ESPERA_VOO_MS
+      : elapsed > APARECE_APOS_MS ? APARECE_APOS_MS + MINIMO_VISIVEL_MS : 0;
+    const remaining = reducedMotion.matches ? 0 : Math.max(0, minimum - elapsed);
     closing = window.setTimeout(() => {
       if (current !== revision) return;
       if (!(flying && flyIcons())) hide();

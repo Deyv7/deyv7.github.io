@@ -445,7 +445,8 @@ html:not(.sidebar-vista):not([data-loading]) .sidebar-entrada {
   }
 }
 
-/* A mesma tela acompanha a primeira carga e cada navegação do Astro. */
+/* A mesma tela acompanha a primeira carga e cada navegação do Astro, mas só
+   aparece quando o carregamento demora de verdade (ver .js[data-loading]). */
 .abertura {
   position: fixed;
   inset: 0;
@@ -459,11 +460,26 @@ html:not(.sidebar-vista):not([data-loading]) .sidebar-entrada {
   transition: opacity 180ms var(--ease-out-quart), visibility 180ms;
 }
 
+/*
+  O carregamento espera 1 s escondido antes de aparecer: troca de página
+  rápida não mostra tela nenhuma, e ele só surge quando a página realmente
+  demora. A abertura da primeira visita (data-voo) aparece na hora.
+*/
 .js[data-loading] .abertura {
   opacity: 1;
   visibility: visible;
   transition: none;
+  animation:
+    aparecer-carregamento 150ms var(--ease-out-quart) 1000ms both,
+    liberar-carregamento 0s 8s forwards;
+}
+
+.js[data-loading][data-voo] .abertura {
   animation: liberar-carregamento 0s 8s forwards;
+}
+
+@keyframes aparecer-carregamento {
+  from { opacity: 0; visibility: hidden; }
 }
 
 @keyframes liberar-carregamento {
@@ -471,7 +487,10 @@ html:not(.sidebar-vista):not([data-loading]) .sidebar-entrada {
 }
 
 /* Abertura da primeira visita (PageLoader): os ícones do menu no centro, que
-   depois voam para a sidebar. A tela segue visível com o fundo esmaecendo. */
+   depois voam para a sidebar. A tela segue visível com o fundo esmaecendo.
+   O seletor precisa vencer o .js[data-loading] .abertura: sem isso, ao sair o
+   data-voo o atraso de 1 s voltava a valer e escondia a abertura no meio. */
+.js[data-loading] .abertura.voando,
 .abertura.voando {
   opacity: 1;
   visibility: visible;
