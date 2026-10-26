@@ -130,6 +130,67 @@
   }
 }
 
+/*
+  Grão de papel no site inteiro: ruído estático de SVG (feTurbulence) numa
+  camada fixa, sem animação e sem JS. Dá textura de impresso ao fundo neutro
+  sem competir com o conteúdo; a opacidade baixa mantém o contraste do texto.
+  Fica abaixo do carregamento (z-100) e fora da impressão.
+*/
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.6 -0.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 160px;
+  opacity: var(--grao, 0.07);
+}
+
+[data-theme="papel"] body::after {
+  --grao: 0.09;
+}
+
+@media print {
+  body::after {
+    display: none;
+  }
+}
+
+/*
+  Luz nos cards de projeto: um brilho suave segue o mouse dentro do card. A
+  posição vem de --mx/--my (script em ProjectCard); só existe com mouse de
+  verdade, e com movimento reduzido o brilho aparece parado no centro.
+*/
+[data-spotlight] {
+  position: relative;
+  --mx: 50%;
+  --my: 35%;
+  --luz: oklch(100% 0 0 / 0.09);
+}
+
+[data-theme="papel"] [data-spotlight] {
+  --luz: oklch(100% 0 0 / 0.45);
+}
+
+[data-spotlight]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(18rem circle at var(--mx) var(--my), var(--luz), transparent 70%);
+  opacity: 0;
+  transition: opacity 300ms var(--ease-out-quart);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-spotlight]:hover::after {
+    opacity: 1;
+  }
+}
+
 @layer components {
   .pagina {
     width: 100%;
