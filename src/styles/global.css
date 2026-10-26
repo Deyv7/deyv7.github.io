@@ -254,20 +254,6 @@ body::after {
   }
 }
 
-/*
-  Entrada escalonada só na primeira página da visita (.sidebar-vista sai do
-  <head> e de cada troca de página em Base.astro). Espera o carregamento sair
-  da frente para começar.
-*/
-html:not(.sidebar-vista)[data-loading] .sidebar-entrada {
-  opacity: 0;
-}
-
-html:not(.sidebar-vista):not([data-loading]) .sidebar-entrada {
-  animation: sidebar-entra 550ms var(--ease-out-quart) both;
-  animation-delay: calc(var(--i, 0) * 60ms);
-}
-
 @keyframes sidebar-entra {
   from {
     opacity: 0;
@@ -279,11 +265,66 @@ html:not(.sidebar-vista):not([data-loading]) .sidebar-entrada {
   }
 }
 
-/* No celular, os itens entram em cascata quando o menu abre. */
-@media (max-width: 1023px) {
-  .drawer-toggle:checked ~ .drawer-side .sidebar-entrada {
-    animation: sidebar-entra 450ms var(--ease-out-quart) both;
-    animation-delay: calc(120ms + var(--i, 0) * 45ms);
+/* Os itens entram em cascata sempre que a sidebar abre. */
+.drawer-toggle:checked ~ .drawer-side .sidebar-entrada {
+  animation: sidebar-entra 450ms var(--ease-out-quart) both;
+  animation-delay: calc(80ms + var(--i, 0) * 40ms);
+}
+
+/*
+  Cérebro no canto que abre a sidebar recolhida (só no desktop; no celular o
+  cabeçalho tem o botão de menu). Fica abaixo da sidebar aberta (z-40).
+*/
+.cerebro-menu {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .cerebro-menu {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 30;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    aspect-ratio: 1;
+    padding: 0.5rem;
+    border: 1px solid var(--color-base-300);
+    border-radius: 9999px;
+    background: color-mix(in oklch, var(--color-base-200) 90%, transparent);
+    backdrop-filter: blur(8px);
+    color: var(--color-base-content);
+    cursor: pointer;
+    transition: transform 250ms var(--ease-out-quart), border-color 200ms;
+  }
+
+  .cerebro-menu:hover,
+  .cerebro-menu[aria-expanded="true"] {
+    border-color: var(--color-accent);
+    transform: scale(1.06);
+  }
+
+  .cerebro-menu:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .cerebro-menu svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* O cérebro dá um pulso quando os ícones da abertura chegam nele. */
+.cerebro-menu.recebeu {
+  animation: cerebro-pulso 500ms var(--ease-out-quart);
+}
+
+@keyframes cerebro-pulso {
+  40% {
+    transform: scale(1.18);
   }
 }
 
@@ -487,7 +528,7 @@ html:not(.sidebar-vista):not([data-loading]) .sidebar-entrada {
 }
 
 /* Abertura da primeira visita (PageLoader): os ícones do menu no centro, que
-   depois voam para a sidebar. A tela segue visível com o fundo esmaecendo.
+   depois voam até o cérebro do canto. A tela segue visível com o fundo esmaecendo.
    O seletor precisa vencer o .js[data-loading] .abertura: sem isso, ao sair o
    data-voo o atraso de 1 s voltava a valer e escondia a abertura no meio. */
 .js[data-loading] .abertura.voando,
@@ -522,8 +563,9 @@ html:not(.sidebar-vista):not([data-loading]) .sidebar-entrada {
   height: 100%;
 }
 
-.icones-voando [data-sidebar-nav] .nav-icone svg:not(.icone-pousou) {
-  visibility: hidden;
+/* Durante o voo o cérebro do canto fica acima da tela de abertura (z-100). */
+.cerebro-destino .cerebro-menu {
+  z-index: 101;
 }
 .abertura-conteudo {
   display: grid;

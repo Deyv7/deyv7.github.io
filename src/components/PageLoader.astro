@@ -28,7 +28,7 @@ const english = getLocale(Astro.url.pathname) === 'en-US';
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const desktop = window.matchMedia('(min-width: 1024px)');
   // Abertura da primeira visita: o cérebro fica um pouco mais e depois os
-  // ícones do menu aparecem no centro e voam cada um para o seu item.
+  // ícones do menu aparecem no centro e voam para dentro do cérebro do canto.
   const ESPERA_VOO_MS = 1200;
   const VITRINE_MS = 1400;
   const VOO_MS = 800;
@@ -127,23 +127,23 @@ const english = getLocale(Astro.url.pathname) === 'en-US';
 
   /**
    * Fim da primeira carga da visita, no desktop: o cérebro e o nome saem, os
-   * ícones do menu aparecem grandes no centro e depois cada um voa até o seu
-   * item na sidebar (FLIP, com um pequeno atraso entre eles), enquanto o fundo
-   * esmaece e a página entra por baixo. Os ícones da sidebar ficam invisíveis
-   * até a cópia pousar em cima deles. Devolve false quando não há para onde
-   * voar, e aí vale a saída de sempre.
+   * ícones do menu aparecem grandes no centro e depois voam, um atrás do
+   * outro, para dentro do cérebro do canto, que guarda a sidebar recolhida.
+   * Enquanto isso o fundo esmaece e a página entra por baixo. Devolve false
+   * quando não há para onde voar, e aí vale a saída de sempre.
    */
   const flyIcons = () => {
     const root = document.documentElement;
     root.removeAttribute('data-voo');
     const loader = document.querySelector<HTMLElement>('#page-loader');
-    const targets = Array.from(document.querySelectorAll<SVGElement>('[data-sidebar-nav] .nav-icone svg'));
-    if (!loader || !targets.length || reducedMotion.matches || !desktop.matches) return false;
-    if (targets.some((target) => !target.getBoundingClientRect().width)) return false;
+    const brain = document.querySelector<HTMLElement>('[data-cerebro-menu]');
+    const sources = Array.from(document.querySelectorAll<SVGElement>('[data-sidebar-nav] .nav-icone svg'));
+    if (!loader || !brain || !sources.length || reducedMotion.matches || !desktop.matches) return false;
+    if (!brain.getBoundingClientRect().width) return false;
 
     const row = document.createElement('div');
     row.className = 'abertura-icones';
-    const cells = targets.map((target) => {
+    const cells = sources.map((target) => {
       const cell = document.createElement('span');
       cell.className = 'abertura-icone';
       const clone = target.cloneNode(true) as SVGElement;
@@ -175,9 +175,12 @@ const english = getLocale(Astro.url.pathname) === 'en-US';
 
     const land = () => {
       if (!row.isConnected) return;
-      root.classList.remove('icones-voando');
-      for (const target of targets) target.classList.remove('icone-pousou');
-      // Some sem transição: cada ícone da sidebar já está no lugar da cópia.
+      root.classList.remove('cerebro-destino');
+      // O cérebro acusa o recebimento com um pulso.
+      brain.classList.remove('recebeu');
+      void brain.offsetWidth;
+      brain.classList.add('recebeu');
+      brain.addEventListener('animationend', () => brain.classList.remove('recebeu'), { once: true });
       loader.style.transition = 'none';
       loader.classList.remove('voando');
       void loader.offsetWidth;
@@ -187,28 +190,29 @@ const english = getLocale(Astro.url.pathname) === 'en-US';
     };
 
     window.setTimeout(() => {
-      // A sidebar aparece pronta (sem a cascata), só com os ícones escondidos.
-      root.classList.add('sidebar-vista', 'icones-voando');
+      // O cérebro sobe acima da tela de abertura para receber os ícones.
+      root.classList.add('cerebro-destino');
       hide();
       animations.push(loader.animate(
         [{ backgroundColor: getComputedStyle(loader).backgroundColor }, { backgroundColor: 'transparent' }],
         { duration: VOO_MS * 0.8, delay: 100, easing: 'ease', fill: 'forwards' },
       ));
+      const to = brain.getBoundingClientRect();
       let landed = 0;
       cells.forEach((cell, i) => {
         const from = cell.getBoundingClientRect();
-        const to = targets[i].getBoundingClientRect();
+        // Mira o centro do cérebro, encolhendo até sumir dentro dele.
+        const scale = (to.width * 0.35) / from.width;
+        const x = to.left + to.width / 2 - (from.left + (from.width * scale) / 2);
+        const y = to.top + to.height / 2 - (from.top + (from.height * scale) / 2);
+        const end = `translate(${x}px, ${y}px) scale(${scale})`;
         const flight = cell.animate([
-          { transform: 'none', color: getComputedStyle(cell).color },
-          {
-            transform: `translate(${to.left - from.left}px, ${to.top - from.top}px) scale(${to.width / from.width})`,
-            color: getComputedStyle(targets[i]).color,
-          },
-        ], { duration: VOO_MS, delay: i * 60, easing: easeInOut, fill: 'forwards' });
+          { transform: 'none', opacity: 1 },
+          { opacity: 1, offset: 0.75 },
+          { transform: end, opacity: 0 },
+        ], { duration: VOO_MS, delay: i * 70, easing: easeInOut, fill: 'forwards' });
         animations.push(flight);
         flight.finished.then(() => {
-          targets[i].classList.add('icone-pousou');
-          cell.style.visibility = 'hidden';
           if (++landed === cells.length) land();
         }, land);
       });
