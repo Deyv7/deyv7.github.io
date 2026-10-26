@@ -140,8 +140,12 @@ export function iniciarFumaca(canvas: HTMLCanvasElement, forca: number): () => v
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const w = canvas.clientWidth || 1;
     const h = canvas.clientHeight || 1;
-    canvas.width = Math.max(1, Math.round(w * dpr));
-    canvas.height = Math.max(1, Math.round(h * dpr));
+    const largura = Math.max(1, Math.round(w * dpr));
+    const altura = Math.max(1, Math.round(h * dpr));
+    // Redimensionar apaga o canvas: só quando o tamanho muda de verdade.
+    if (largura === canvas.width && altura === canvas.height) return true;
+    canvas.width = largura;
+    canvas.height = altura;
     pw = Math.max(2, Math.ceil(w / 6));
     ph = Math.max(2, Math.ceil(h / 4));
     gl.bindTexture(gl.TEXTURE_2D, textura);
@@ -225,12 +229,14 @@ export function iniciarFumaca(canvas: HTMLCanvasElement, forca: number): () => v
   });
   io.observe(canvas);
 
+  // Desenha na hora, antes da pintura: esperar o próximo quadro deixava o
+  // canvas recém-apagado aparecer vazio por um instante (o fundo piscava).
   const ro = new ResizeObserver(() => {
     if (!dimensionar()) {
       canvas.hidden = true;
       return;
     }
-    if (!raf) desenhar();
+    desenhar();
   });
   ro.observe(canvas);
 

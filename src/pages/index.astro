@@ -17,12 +17,18 @@ const projects = (await getProjects(locale)).slice(0, 3);
   <div data-home>
   <section
     data-home-hero
-    class="capa relative flex min-h-[calc(100dvh-3.25rem)] items-center justify-center overflow-hidden px-6 py-20 text-center lg:min-h-dvh"
+    class="capa relative flex min-h-[calc(100svh-3.25rem)] items-center justify-center overflow-hidden px-6 py-20 text-center lg:min-h-svh"
   >
+    {/* svh, não dvh: no iPhone o dvh muda quando a barra do Safari some na
+        rolagem, a capa mudava de altura e o canvas da fumaça piscava. */}
     <HeroSmoke />
     <div class="relative max-w-3xl">
-      <h1 class="text-4xl font-bold tracking-tight sm:text-6xl" data-home-intro>
-        <span class="bg-primary px-4 py-2 text-primary-content">{english ? 'HELLO' : 'SEJA'}</span> {english ? '& WELCOME!' : 'BEM-VINDO!'}
+      {/* inline-block: o fundo do destaque entra na altura da linha; inline, o
+          padding vazava para a linha de baixo e tampava o "VINDO" no celular.
+          O nowrap impede a quebra no hífen de "BEM-VINDO!". */}
+      <h1 class="text-4xl leading-tight font-bold tracking-tight sm:text-6xl" data-home-intro>
+        <span class="inline-block bg-primary px-4 py-1 text-primary-content">{english ? 'HELLO' : 'SEJA'}</span>
+        <span class="whitespace-nowrap">{english ? '& WELCOME!' : 'BEM-VINDO!'}</span>
       </h1>
 
       <p class="mt-6 text-xl sm:text-2xl" data-home-intro>
