@@ -10,6 +10,11 @@ import EmailDialog from '../components/EmailDialog.astro';
 import LanguageSwitcher from '../components/LanguageSwitcher.astro';
 import { getLocale, localizePath } from '../lib/i18n';
 import { getProfileData } from '../lib/profile-data';
+import brainLoading from '../assets/brain-loading.svg?raw';
+
+// O cérebro do carregamento como botão do menu. Os quadros da animação são
+// tocados pelo script abaixo, que também o deixa parado com movimento reduzido.
+const cerebro = brainLoading;
 
 interface Props {
   title?: string;
@@ -78,7 +83,16 @@ const personJsonLd = {
         try {
           const saved = localStorage.getItem('tema');
           if (saved === 'papel' || saved === 'grafite') root.dataset.theme = saved;
-
+        } catch {}
+        // Primeira página da visita, no desktop e sem pedido de menos movimento:
+        // o carregamento termina com os ícones do menu voando até o cérebro.
+        try {
+          if (!sessionStorage.getItem('voo')) {
+            sessionStorage.setItem('voo', '1');
+            if (matchMedia('(min-width: 1024px)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+              root.setAttribute('data-voo', '');
+            }
+          }
         } catch {}
       })();
     </script>
@@ -93,7 +107,20 @@ const personJsonLd = {
       {english ? 'Skip to content' : 'Pular para o conteúdo'}
     </a>
 
-    <div class="drawer lg:drawer-open">
+    {/* No desktop a sidebar fica recolhida: o cérebro no canto a abre quando o
+        cursor passa por ele (ou num clique), por cima do conteúdo. No celular
+        segue o botão de menu do cabeçalho. */}
+    <button
+      type="button"
+      class="cerebro-menu"
+      aria-controls="menu-lateral"
+      aria-expanded="false"
+      aria-label={english ? 'Open menu' : 'Abrir menu'}
+      data-cerebro-menu
+      set:html={cerebro}
+    />
+
+    <div class="drawer">
       <input id="menu-lateral" type="checkbox" class="drawer-toggle" />
 
       <div class="drawer-content flex min-h-dvh flex-col">
@@ -129,6 +156,94 @@ const personJsonLd = {
           if (saved === 'papel' || saved === 'grafite') root.dataset.theme = saved;
         } catch {}
       });
+
+      // Sidebar recolhida no desktop: o cérebro no canto abre ao passar o cursor
+      // (ou num clique, para teclado e tela de toque) e ela fecha quando o cursor
+      // sai dela. Os listeners ficam no documento e sobrevivem à troca de página.
+      {
+        let fechar = 0;
+        const menu = () => document.getElementById('menu-lateral') as HTMLInputElement | null;
+        const gatilho = () => document.querySelector<HTMLElement>('[data-cerebro-menu]');
+        const definir = (aberto: boolean) => {
+          window.clearTimeout(fechar);
+          const toggle = menu();
+          if (!toggle || toggle.checked === aberto) return;
+          toggle.checked = aberto;
+          toggle.dispatchEvent(new Event('change', { bubbles: true }));
+        };
+        const dentro = (alvo: EventTarget | null) =>
+          alvo instanceof Element && !!alvo.closest('[data-cerebro-menu], .drawer-side aside');
+
+        document.addEventListener('change', (event) => {
+          if ((event.target as Element | null)?.id !== 'menu-lateral') return;
+          gatilho()?.setAttribute('aria-expanded', String(menu()?.checked ?? false));
+        });
+        document.addEventListener('pointerover', (event) => {
+          if (event.pointerType !== 'mouse') return;
+          if ((event.target as Element).closest?.('[data-cerebro-menu]')) definir(true);
+          else if (dentro(event.target)) window.clearTimeout(fechar);
+        });
+        document.addEventListener('pointerout', (event) => {
+          if (event.pointerType !== 'mouse' || !menu()?.checked) return;
+          if (!dentro(event.target) || dentro(event.relatedTarget)) return;
+          // Um respiro antes de fechar, para o cursor poder escorregar da borda.
+          window.clearTimeout(fechar);
+          fechar = window.setTimeout(() => definir(false), 300);
+        });
+        // Só abre: com mouse o hover já abriu, e alternar aqui fecharia no clique.
+        // Fecha com Esc, clicando fora ou tirando o cursor.
+        document.addEventListener('click', (event) => {
+          if ((event.target as Element).closest?.('[data-cerebro-menu]')) definir(true);
+        });
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && menu()?.checked) {
+            definir(false);
+            gatilho()?.focus();
+          }
+        });
+
+        // O cérebro do canto roda sempre, menos para quem pediu menos movimento.
+        // Os quadros do próprio arquivo são tocados aqui, como no PageLoader: o
+        // relógio SMIL não reinicia no SVG que o ClientRouter traz na troca de
+        // página, e o cérebro ficava parado fora da primeira página.
+        const reduzido = window.matchMedia('(prefers-reduced-motion: reduce)');
+        let faixas: { path: Element; quadros: string[]; duracao: number; atual: number }[] = [];
+        let quadro = 0;
+        let inicio = performance.now();
+        const tocar = (agora: number) => {
+          for (const faixa of faixas) {
+            const decorrido = Math.max(0, agora - inicio) % faixa.duracao;
+            const i = Math.floor((decorrido / faixa.duracao) * faixa.quadros.length);
+            if (i === faixa.atual || !faixa.quadros[i]) continue;
+            faixa.path.setAttribute('d', faixa.quadros[i]);
+            faixa.atual = i;
+          }
+          quadro = requestAnimationFrame(tocar);
+        };
+        const sincronizarCerebro = () => {
+          cancelAnimationFrame(quadro);
+          const svg = gatilho()?.querySelector('svg');
+          if (!svg) return;
+          // Na primeira passada troca o SMIL pelos quadros guardados.
+          for (const animacao of svg.querySelectorAll('animate[attributeName="d"]')) {
+            const path = animacao.parentElement!;
+            const quadros = animacao.getAttribute('values')?.split(';') ?? [];
+            const duracao = parseFloat(animacao.getAttribute('dur') ?? '2.002') * 1000 || 2002;
+            if (quadros.length) faixas.push({ path, quadros, duracao, atual: -1 });
+            animacao.remove();
+          }
+          faixas = faixas.filter((faixa) => faixa.path.isConnected);
+          if (reduzido.matches || document.hidden) {
+            for (const faixa of faixas) if (faixa.quadros[0]) faixa.path.setAttribute('d', faixa.quadros[0]);
+            return;
+          }
+          inicio = performance.now();
+          quadro = requestAnimationFrame(tocar);
+        };
+        document.addEventListener('astro:page-load', sincronizarCerebro);
+        document.addEventListener('visibilitychange', sincronizarCerebro);
+        reduzido.addEventListener('change', sincronizarCerebro);
+      }
 
       // Revela seções quando entram na tela, uma vez por elemento
       document.addEventListener('astro:page-load', () => {

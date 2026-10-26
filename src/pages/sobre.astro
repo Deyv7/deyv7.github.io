@@ -66,14 +66,10 @@ const paragraphs = english ? [
           }
         </dl>
 
-        {
-          profile.cvUrl && (
-            <a href={profile.cvUrl} class="btn btn-outline btn-sm mt-6" target="_blank" rel="noopener noreferrer" aria-label={english ? 'View resume (PDF, opens in a new tab)' : 'Ver currículo (PDF, abre em uma nova aba)'}>
-              <Icon name="external" class="size-4" />
-              {english ? 'View resume (PT-BR)' : 'Ver currículo'}
-            </a>
-          )
-        }
+        <a href={localizePath('/curriculo/', locale)} class="btn btn-outline btn-sm mt-6">
+          <Icon name="arrow-right" class="size-4" />
+          {english ? 'View resume' : 'Ver currículo'}
+        </a>
       </aside>
     </div>
 

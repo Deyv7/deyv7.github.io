@@ -17,8 +17,8 @@ const ano = new Date().getFullYear();
 ---
 
 <aside class="flex min-h-full w-64 flex-col bg-base-200">
-  <div class="px-6 pt-10 pb-7 text-center">
-    <div class="avatar avatar-placeholder mx-auto">
+  <div class="sidebar-entrada px-6 pt-10 pb-7 text-center" style="--i: 0">
+    <div class="avatar avatar-placeholder sidebar-avatar mx-auto">
       <div class="w-28 rounded-full bg-neutral text-neutral-content ring-1 ring-primary/50 ring-offset-4 ring-offset-base-200">
         <span class="text-3xl font-semibold">{profile.initials}</span>
       </div>
@@ -26,28 +26,31 @@ const ano = new Date().getFullYear();
     <p class="mt-5 text-lg leading-tight font-semibold">{profile.name}</p>
   </div>
 
-  <nav aria-label={english ? 'Main menu' : 'Menu principal'}>
-    <ul class="border-t border-base-300">
+  <nav class="relative" aria-label={english ? 'Main menu' : 'Menu principal'} data-sidebar-nav>
+    {/* Fundo do item ativo, que desliza de um item para o outro na navegação.
+        Sem JS ele não aparece e o próprio item mantém o fundo. */}
+    <span class="nav-indicador" aria-hidden="true" data-nav-indicador><span class="nav-indicador-icone" /></span>
+    <ul class="relative border-t border-base-300">
       {
-        nav.map((item) => (
-          <li>
+        nav.map((item, i) => (
+          <li class="sidebar-entrada" style={`--i: ${i + 1}`}>
             <a
               href={localizePath(item.href, locale)}
               aria-current={ehAtivo(item.href) ? 'page' : undefined}
               class:list={[
-                'flex items-center gap-3 border-b border-base-300 pe-5 text-sm transition-colors',
+                'nav-item flex items-center gap-3 border-b border-base-300 pe-5 text-sm transition-colors',
                 ehAtivo(item.href) ? 'bg-base-300/50 text-brand' : 'text-muted hover:bg-base-300/30 hover:text-base-content',
               ]}
             >
               <span
                 class:list={[
-                  'grid size-11 shrink-0 place-items-center transition-colors',
+                  'nav-icone grid size-11 shrink-0 place-items-center transition-colors',
                   ehAtivo(item.href) ? 'bg-primary text-primary-content' : 'text-muted',
                 ]}
               >
                 <Icon name={item.icon} class="size-[1.125rem]" />
               </span>
-              {item.label}
+              <span class="nav-rotulo">{item.label}</span>
             </a>
           </li>
         ))
@@ -55,9 +58,9 @@ const ano = new Date().getFullYear();
     </ul>
   </nav>
 
-  <div class="mt-auto px-6 py-7">
+  <div class="sidebar-entrada mt-auto px-6 py-7" style={`--i: ${nav.length + 1}`}>
     <div class="mb-5 hidden lg:block"><LanguageSwitcher /></div>
-    <div class="flex items-center gap-1">
+    <div class="sidebar-redes flex items-center gap-1">
       <a
         href={profile.github}
         class="btn btn-ghost btn-square btn-sm"
@@ -96,6 +99,63 @@ const ano = new Date().getFullYear();
 </aside>
 
 <script>
+  import { loadingEvent } from '../lib/loading-state';
+
+  // Topo do item ativo na página anterior: o indicador parte de lá e desliza
+  // até o item da página nova. O módulo vive entre navegações do ClientRouter.
+  let ultimoTopo: number | null = null;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  const posicionarIndicador = () => {
+    const nav = document.querySelector<HTMLElement>('[data-sidebar-nav]');
+    const indicador = nav?.querySelector<HTMLElement>('[data-nav-indicador]');
+    if (!nav || !indicador) return;
+    const ativo = nav.querySelector<HTMLElement>('.nav-item[aria-current="page"]');
+    // No celular a sidebar mora no drawer fechado e não tem medidas: fica o fundo
+    // do próprio item, e o indicador é medido quando o menu abrir.
+    if (!ativo || !ativo.offsetHeight) {
+      // Página fora do menu (404): sem fundo, e a próxima não desliza de lugar nenhum.
+      nav.removeAttribute('data-indicador');
+      ultimoTopo = null;
+      return;
+    }
+
+    // Pelos retângulos, não por offsetTop: a entrada anima o <li> com transform,
+    // o que o torna o offsetParent e zeraria a conta.
+    const topo = Math.round(ativo.getBoundingClientRect().top - nav.getBoundingClientRect().top);
+    indicador.style.height = `${ativo.offsetHeight}px`;
+    const mover = (y: number, animar: boolean) => {
+      indicador.style.transition = animar ? '' : 'none';
+      indicador.style.transform = `translateY(${y}px)`;
+    };
+
+    const deslizar = ultimoTopo !== null && ultimoTopo !== topo && !reducedMotion.matches;
+    mover(deslizar ? ultimoTopo! : topo, false);
+    nav.setAttribute('data-indicador', '');
+    ultimoTopo = topo;
+    if (!deslizar) return;
+
+    // Espera o carregamento sair da frente, senão o deslize acontece escondido.
+    void indicador.offsetHeight;
+    const partir = () => requestAnimationFrame(() => mover(topo, true));
+    if (!document.documentElement.hasAttribute('data-loading')) partir();
+    else document.addEventListener(loadingEvent, function aoLiberar(event) {
+      if (event.detail.active) return;
+      document.removeEventListener(loadingEvent, aoLiberar);
+      partir();
+    });
+  };
+
+  const remedir = () => {
+    ultimoTopo = null;
+    posicionarIndicador();
+  };
+  document.addEventListener('astro:page-load', posicionarIndicador);
+  window.addEventListener('resize', remedir);
+  document.addEventListener('change', (event) => {
+    if ((event.target as Element | null)?.id === 'menu-lateral') requestAnimationFrame(remedir);
+  });
+
   document.addEventListener('astro:page-load', () => {
     const root = document.documentElement;
 

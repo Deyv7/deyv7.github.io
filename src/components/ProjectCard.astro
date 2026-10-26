@@ -23,6 +23,7 @@ const categorias = d.category.map((c) => categoryLabel[c]).join(' · ');
 <a
   href={localizePath(`/projetos/${project.id}/`, locale)}
   aria-describedby={d.disclaimer ? `disclaimer-${project.id}` : undefined}
+  data-spotlight
   class="group block h-full overflow-hidden rounded-box border border-base-300 bg-base-200 transition-colors hover:border-primary/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
 >
   <div class="relative aspect-4/3 w-full overflow-hidden border-b border-base-300" title={d.disclaimer}>
@@ -70,6 +71,20 @@ const categorias = d.category.map((c) => categoryLabel[c]).join(' · ');
     </div>
   </div>
 </a>
+
+<script>
+  // Um só listener no documento serve a todos os cards, inclusive os que o
+  // ClientRouter troca na navegação. Com movimento reduzido a luz fica parada.
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  document.addEventListener('pointermove', (event) => {
+    if (event.pointerType !== 'mouse' || reduced.matches) return;
+    const card = (event.target as Element | null)?.closest<HTMLElement>('[data-spotlight]');
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+    card.style.setProperty('--my', `${event.clientY - rect.top}px`);
+  }, { passive: true });
+</script>
 
 <style>
   @media (hover: hover) and (pointer: fine) {

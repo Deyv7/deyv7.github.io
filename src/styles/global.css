@@ -130,6 +130,234 @@
   }
 }
 
+/*
+  Grão de papel no site inteiro: ruído estático de SVG (feTurbulence) numa
+  camada fixa, sem animação e sem JS. Dá textura de impresso ao fundo neutro
+  sem competir com o conteúdo; a opacidade baixa mantém o contraste do texto.
+  Fica abaixo do carregamento (z-100) e fora da impressão.
+*/
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.6 -0.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 160px;
+  opacity: var(--grao, 0.07);
+}
+
+[data-theme="papel"] body::after {
+  --grao: 0.09;
+}
+
+@media print {
+  body::after {
+    display: none;
+  }
+}
+
+/*
+  Luz nos cards de projeto: um brilho suave segue o mouse dentro do card. A
+  posição vem de --mx/--my (script em ProjectCard); só existe com mouse de
+  verdade, e com movimento reduzido o brilho aparece parado no centro.
+*/
+[data-spotlight] {
+  position: relative;
+  --mx: 50%;
+  --my: 35%;
+  --luz: oklch(100% 0 0 / 0.09);
+}
+
+[data-theme="papel"] [data-spotlight] {
+  --luz: oklch(100% 0 0 / 0.45);
+}
+
+[data-spotlight]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(18rem circle at var(--mx) var(--my), var(--luz), transparent 70%);
+  opacity: 0;
+  transition: opacity 300ms var(--ease-out-quart);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-spotlight]:hover::after {
+    opacity: 1;
+  }
+}
+
+/* ---------- Sidebar ----------
+  Indicador do item ativo: um fundo único que desliza entre os itens quando a
+  página muda (posição em Sidebar.astro). Com ele no lugar, os itens deixam de
+  pintar o próprio fundo; sem JS, o fundo do item continua valendo.
+*/
+.nav-indicador {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  display: none;
+  background: color-mix(in oklch, var(--color-base-300) 50%, transparent);
+  pointer-events: none;
+  transition: transform 450ms var(--ease-in-out-quart);
+}
+
+.nav-indicador-icone {
+  display: block;
+  width: 2.75rem;
+  height: 100%;
+  background: var(--color-primary);
+}
+
+[data-indicador] .nav-indicador {
+  display: block;
+}
+
+[data-indicador] .nav-item[aria-current="page"],
+[data-indicador] .nav-item[aria-current="page"] .nav-icone {
+  background: transparent;
+}
+
+/* Hover: o ícone e o rótulo andam um pouco para a direita. */
+.nav-icone svg,
+.nav-rotulo {
+  transition: transform 200ms var(--ease-out-quart);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav-item:hover .nav-icone svg {
+    transform: scale(1.12);
+  }
+
+  .nav-item:hover .nav-rotulo {
+    transform: translateX(0.25rem);
+  }
+
+  .sidebar-redes > * {
+    transition: transform 200ms var(--ease-out-quart), background-color 150ms, color 150ms;
+  }
+
+  .sidebar-redes > *:hover {
+    transform: translateY(-2px);
+  }
+
+  .sidebar-avatar > div {
+    transition: box-shadow 300ms var(--ease-out-quart), transform 300ms var(--ease-out-quart);
+  }
+
+  .sidebar-avatar:hover > div {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes sidebar-entra {
+  from {
+    opacity: 0;
+    transform: translateX(-0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Os itens entram em cascata sempre que a sidebar abre. */
+.drawer-toggle:checked ~ .drawer-side .sidebar-entrada {
+  animation: sidebar-entra 450ms var(--ease-out-quart) both;
+  animation-delay: calc(80ms + var(--i, 0) * 40ms);
+}
+
+/*
+  Cérebro no canto que abre a sidebar recolhida (só no desktop; no celular o
+  cabeçalho tem o botão de menu). Fica abaixo da sidebar aberta (z-40).
+*/
+.cerebro-menu {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .cerebro-menu {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 30;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    aspect-ratio: 1;
+    padding: 0.5rem;
+    border: 1px solid var(--color-base-300);
+    border-radius: 9999px;
+    background: color-mix(in oklch, var(--color-base-200) 90%, transparent);
+    backdrop-filter: blur(8px);
+    color: var(--color-base-content);
+    cursor: pointer;
+    transition: transform 250ms var(--ease-out-quart), border-color 200ms;
+  }
+
+  .cerebro-menu:hover,
+  .cerebro-menu[aria-expanded="true"] {
+    border-color: var(--color-accent);
+    transform: scale(1.06);
+  }
+
+  .cerebro-menu:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .cerebro-menu svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* O cérebro dá um pulso quando os ícones da abertura chegam nele. */
+.cerebro-menu.recebeu {
+  animation: cerebro-pulso 500ms var(--ease-out-quart);
+}
+
+@keyframes cerebro-pulso {
+  40% {
+    transform: scale(1.18);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-indicador,
+  .nav-icone svg,
+  .nav-rotulo {
+    transition: none;
+  }
+
+  .sidebar-entrada {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Botão flutuante de download do currículo: entra depois do carregamento. */
+.baixar-cv {
+  animation: subir 500ms var(--ease-out-quart) 400ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .baixar-cv {
+    animation: none;
+  }
+}
+
+@media print {
+  .baixar-cv {
+    display: none;
+  }
+}
+
 @layer components {
   .pagina {
     width: 100%;
@@ -258,7 +486,8 @@
   }
 }
 
-/* A mesma tela acompanha a primeira carga e cada navegação do Astro. */
+/* A mesma tela acompanha a primeira carga e cada navegação do Astro, mas só
+   aparece quando o carregamento demora de verdade (ver .js[data-loading]). */
 .abertura {
   position: fixed;
   inset: 0;
@@ -272,15 +501,71 @@
   transition: opacity 180ms var(--ease-out-quart), visibility 180ms;
 }
 
+/*
+  O carregamento espera 1 s escondido antes de aparecer: troca de página
+  rápida não mostra tela nenhuma, e ele só surge quando a página realmente
+  demora. A abertura da primeira visita (data-voo) aparece na hora.
+*/
 .js[data-loading] .abertura {
   opacity: 1;
   visibility: visible;
   transition: none;
+  animation:
+    aparecer-carregamento 150ms var(--ease-out-quart) 1000ms both,
+    liberar-carregamento 0s 8s forwards;
+}
+
+.js[data-loading][data-voo] .abertura {
   animation: liberar-carregamento 0s 8s forwards;
+}
+
+@keyframes aparecer-carregamento {
+  from { opacity: 0; visibility: hidden; }
 }
 
 @keyframes liberar-carregamento {
   to { opacity: 0; visibility: hidden; }
+}
+
+/* Abertura da primeira visita (PageLoader): os ícones do menu no centro, que
+   depois voam até o cérebro do canto. A tela segue visível com o fundo esmaecendo.
+   O seletor precisa vencer o .js[data-loading] .abertura: sem isso, ao sair o
+   data-voo o atraso de 1 s voltava a valer e escondia a abertura no meio. */
+.js[data-loading] .abertura.voando,
+.abertura.voando {
+  opacity: 1;
+  visibility: visible;
+  transition: none;
+  animation: none;
+}
+
+.abertura-icones {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  pointer-events: none;
+}
+
+.abertura-icone {
+  display: block;
+  width: clamp(2.5rem, 5vw, 3.5rem);
+  aspect-ratio: 1;
+  transform-origin: 0 0;
+  color: var(--color-base-content);
+}
+
+.abertura-icone svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Durante o voo o cérebro do canto fica acima da tela de abertura (z-100). */
+.cerebro-destino .cerebro-menu {
+  z-index: 101;
 }
 .abertura-conteudo {
   display: grid;

@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import TituloSecao from '../components/TituloSecao.astro';
 import { getProfileData } from '../lib/profile-data';
-import { getLocale } from '../lib/i18n';
+import { getLocale, localizePath } from '../lib/i18n';
 
 const locale = getLocale(Astro.url.pathname);
 const english = locale === 'en-US';
@@ -66,16 +66,14 @@ const areas = [
               GitHub
             </a>
           </li>
-          {
-            profile.cvUrl && (
-              <li>
-                <a href={profile.cvUrl} class="btn btn-outline" target="_blank" rel="noopener noreferrer" aria-label={english ? 'View resume (PDF, opens in a new tab)' : 'Ver currículo (PDF, abre em uma nova aba)'}>
-                  <Icon name="external" class="size-4" />
-                  {english ? 'View resume (PT-BR)' : 'Ver currículo'}
-                </a>
-              </li>
-            )
-          }
+          <li>
+            {/* Abre a página do currículo no próprio site: o PDF em nova aba virava
+                download no celular e em navegadores configurados para baixar PDF. */}
+            <a href={localizePath('/curriculo/', locale)} class="btn btn-outline">
+              <Icon name="arrow-right" class="size-4" />
+              {english ? 'View resume' : 'Ver currículo'}
+            </a>
+          </li>
         </ul>
       </div>
 
