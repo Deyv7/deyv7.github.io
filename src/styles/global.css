@@ -191,6 +191,23 @@ body::after {
   }
 }
 
+/* Botão flutuante de download do currículo: entra depois do carregamento. */
+.baixar-cv {
+  animation: subir 500ms var(--ease-out-quart) 400ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .baixar-cv {
+    animation: none;
+  }
+}
+
+@media print {
+  .baixar-cv {
+    display: none;
+  }
+}
+
 @layer components {
   .pagina {
     width: 100%;

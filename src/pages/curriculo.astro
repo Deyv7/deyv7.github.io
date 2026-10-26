@@ -16,7 +16,7 @@ const ano = (periodo: string) => periodo.match(/\d{4}/)?.[0] ?? '';
   title={`${english ? 'Resume' : 'Currículo'} · ${profile.name}`}
   description={english ? 'Deyvid Prado’s experience, education, certifications, and skills.' : 'Experiência, formação, certificações e competências de Deyvid Prado.'}
 >
-  <div class="pagina">
+  <div class="pagina pb-28">
     <TituloSecao destaque={english ? 'MY' : 'MEU'} resto={english ? 'RESUME' : 'CURRÍCULO'} subtitulo={english ? 'Experience and education' : 'Experiência e formação'} />
 
     <div class="grid gap-14 lg:grid-cols-2 lg:gap-12">
@@ -120,4 +120,23 @@ const ano = (periodo: string) => periodo.match(/\d{4}/)?.[0] ?? '';
       </dl>
     </section>
   </div>
+
+  {
+    /* Download do PDF sempre à mão: fica fixo no canto enquanto a página rola.
+       O pb-28 da página garante que ele nunca cubra a última linha. */
+    profile.cvUrl && (
+      <div class="baixar-cv fixed right-5 bottom-5 z-30 sm:right-8 sm:bottom-8">
+        <span class="tooltip tooltip-left" data-tip={english ? 'Download resume (PDF)' : 'Baixar currículo (PDF)'}>
+          <a
+            href={profile.cvUrl}
+            download={english ? 'Resume-Deyvid-Prado.pdf' : 'Curriculo-Deyvid-Prado.pdf'}
+            class="btn btn-primary btn-circle btn-lg shadow-lg"
+            aria-label={english ? 'Download resume (PDF)' : 'Baixar currículo (PDF)'}
+          >
+            <Icon name="download" class="size-6" />
+          </a>
+        </span>
+      </div>
+    )
+  }
 </Base>
