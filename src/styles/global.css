@@ -469,6 +469,43 @@ html:not(.sidebar-vista):not([data-loading]) .sidebar-entrada {
 @keyframes liberar-carregamento {
   to { opacity: 0; visibility: hidden; }
 }
+
+/* Abertura da primeira visita (PageLoader): os ícones do menu no centro, que
+   depois voam para a sidebar. A tela segue visível com o fundo esmaecendo. */
+.abertura.voando {
+  opacity: 1;
+  visibility: visible;
+  transition: none;
+  animation: none;
+}
+
+.abertura-icones {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  pointer-events: none;
+}
+
+.abertura-icone {
+  display: block;
+  width: clamp(2.5rem, 5vw, 3.5rem);
+  aspect-ratio: 1;
+  transform-origin: 0 0;
+  color: var(--color-base-content);
+}
+
+.abertura-icone svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.icones-voando [data-sidebar-nav] .nav-icone svg:not(.icone-pousou) {
+  visibility: hidden;
+}
 .abertura-conteudo {
   display: grid;
   justify-items: center;

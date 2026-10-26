@@ -84,6 +84,16 @@ const personJsonLd = {
           if (sessionStorage.getItem('sidebar')) root.classList.add('sidebar-vista');
           else sessionStorage.setItem('sidebar', '1');
         } catch {}
+        // Primeira página da visita, no desktop e sem pedido de menos movimento:
+        // o carregamento termina com os ícones do menu voando para a sidebar.
+        try {
+          if (!sessionStorage.getItem('voo')) {
+            sessionStorage.setItem('voo', '1');
+            if (matchMedia('(min-width: 1024px)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+              root.setAttribute('data-voo', '');
+            }
+          }
+        } catch {}
       })();
     </script>
     <script type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
