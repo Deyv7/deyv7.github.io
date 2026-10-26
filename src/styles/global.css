@@ -191,6 +191,115 @@ body::after {
   }
 }
 
+/* ---------- Sidebar ----------
+  Indicador do item ativo: um fundo único que desliza entre os itens quando a
+  página muda (posição em Sidebar.astro). Com ele no lugar, os itens deixam de
+  pintar o próprio fundo; sem JS, o fundo do item continua valendo.
+*/
+.nav-indicador {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  display: none;
+  background: color-mix(in oklch, var(--color-base-300) 50%, transparent);
+  pointer-events: none;
+  transition: transform 450ms var(--ease-in-out-quart);
+}
+
+.nav-indicador-icone {
+  display: block;
+  width: 2.75rem;
+  height: 100%;
+  background: var(--color-primary);
+}
+
+[data-indicador] .nav-indicador {
+  display: block;
+}
+
+[data-indicador] .nav-item[aria-current="page"],
+[data-indicador] .nav-item[aria-current="page"] .nav-icone {
+  background: transparent;
+}
+
+/* Hover: o ícone e o rótulo andam um pouco para a direita. */
+.nav-icone svg,
+.nav-rotulo {
+  transition: transform 200ms var(--ease-out-quart);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav-item:hover .nav-icone svg {
+    transform: scale(1.12);
+  }
+
+  .nav-item:hover .nav-rotulo {
+    transform: translateX(0.25rem);
+  }
+
+  .sidebar-redes > * {
+    transition: transform 200ms var(--ease-out-quart), background-color 150ms, color 150ms;
+  }
+
+  .sidebar-redes > *:hover {
+    transform: translateY(-2px);
+  }
+
+  .sidebar-avatar > div {
+    transition: box-shadow 300ms var(--ease-out-quart), transform 300ms var(--ease-out-quart);
+  }
+
+  .sidebar-avatar:hover > div {
+    transform: scale(1.04);
+  }
+}
+
+/*
+  Entrada escalonada só na primeira página da visita (.sidebar-vista sai do
+  <head> e de cada troca de página em Base.astro). Espera o carregamento sair
+  da frente para começar.
+*/
+html:not(.sidebar-vista)[data-loading] .sidebar-entrada {
+  opacity: 0;
+}
+
+html:not(.sidebar-vista):not([data-loading]) .sidebar-entrada {
+  animation: sidebar-entra 550ms var(--ease-out-quart) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+@keyframes sidebar-entra {
+  from {
+    opacity: 0;
+    transform: translateX(-0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* No celular, os itens entram em cascata quando o menu abre. */
+@media (max-width: 1023px) {
+  .drawer-toggle:checked ~ .drawer-side .sidebar-entrada {
+    animation: sidebar-entra 450ms var(--ease-out-quart) both;
+    animation-delay: calc(120ms + var(--i, 0) * 45ms);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-indicador,
+  .nav-icone svg,
+  .nav-rotulo {
+    transition: none;
+  }
+
+  .sidebar-entrada {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}
+
 /* Botão flutuante de download do currículo: entra depois do carregamento. */
 .baixar-cv {
   animation: subir 500ms var(--ease-out-quart) 400ms both;

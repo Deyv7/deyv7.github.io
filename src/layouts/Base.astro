@@ -78,7 +78,11 @@ const personJsonLd = {
         try {
           const saved = localStorage.getItem('tema');
           if (saved === 'papel' || saved === 'grafite') root.dataset.theme = saved;
-
+        } catch {}
+        // A sidebar entra em cascata só na primeira página da visita.
+        try {
+          if (sessionStorage.getItem('sidebar')) root.classList.add('sidebar-vista');
+          else sessionStorage.setItem('sidebar', '1');
         } catch {}
       })();
     </script>
@@ -124,6 +128,8 @@ const personJsonLd = {
       document.addEventListener('astro:after-swap', () => {
         const root = document.documentElement;
         root.classList.add('js');
+        // Navegando dentro do site a sidebar já foi vista: sem entrada de novo.
+        root.classList.add('sidebar-vista');
         try {
           const saved = localStorage.getItem('tema');
           if (saved === 'papel' || saved === 'grafite') root.dataset.theme = saved;
