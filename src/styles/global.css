@@ -134,12 +134,14 @@
   Grão de papel no site inteiro: ruído estático de SVG (feTurbulence) numa
   camada fixa, sem animação e sem JS. Dá textura de impresso ao fundo neutro
   sem competir com o conteúdo; a opacidade baixa mantém o contraste do texto.
-  Fica abaixo do carregamento (z-100) e fora da impressão.
+  Fica abaixo do carregamento (z-100) e fora da impressão. Passa das bordas
+  da tela para não abrir uma faixa sem grão quando a barra do Safari muda de
+  tamanho na rolagem.
 */
 body::after {
   content: "";
   position: fixed;
-  inset: 0;
+  inset: -15vh 0;
   z-index: 60;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.6 -0.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
