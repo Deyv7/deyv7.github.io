@@ -65,6 +65,6 @@ The regression errors have a Moran's I of **0.48**; shuffling them 999 times, th
 
 ## Scope and caveats
 
-The results measure association between municipal characteristics and abstention. None of them shows cause, and the data describes municipalities, not individual voters. The project uses tables already published by Base dos Dados, without ingesting the original TSE files. Fernando de Noronha falls outside IBGE's simplified mesh and has its own label.
+The results measure association between municipal characteristics and abstention. None of them shows cause, and the data describes municipalities, not individual voters. The project uses tables already published by Base dos Dados, without ingesting the original TSE files.
 
 Independent project, with no institutional affiliation with the TSE or IBGE.
