@@ -26,7 +26,7 @@ stack:
   - { name: DAX, role: "Measures for turnout, abstention, and percentage point changes" }
 links:
   repo: https://github.com/Deyv7/eleicoes-em-dados
-related: [novacasa-people-analytics]
+related: [abstencao-eleitoral, novacasa-people-analytics]
 order: 0
 ---
 
