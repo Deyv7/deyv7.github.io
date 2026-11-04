@@ -65,6 +65,6 @@ Os erros da regressão têm I de Moran de **0,48**; embaralhando 999 vezes, o ma
 
 ## Escopo e cuidados
 
-Os resultados medem associação entre características do município e abstenção. Nenhum deles mostra causa, e o dado é do município, não do eleitor. O projeto usa tabelas já publicadas pela Base dos Dados, sem ingestão dos arquivos originais do TSE. Fernando de Noronha fica fora da malha simplificada do IBGE e aparece com rótulo próprio.
+Os resultados medem associação entre características do município e abstenção. Nenhum deles mostra causa, e o dado é do município, não do eleitor. O projeto usa tabelas já publicadas pela Base dos Dados, sem ingestão dos arquivos originais do TSE.
 
 Projeto independente, sem vínculo institucional com o TSE ou o IBGE.
