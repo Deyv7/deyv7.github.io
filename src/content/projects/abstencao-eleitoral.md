@@ -36,7 +36,7 @@ stack:
 links:
   demo: https://deyv7.github.io/abstencao-eleitoral/
   repo: https://github.com/Deyv7/abstencao-eleitoral
-related: [eleicoes-em-dados]
+related: [acidentes-prf, eleicoes-em-dados]
 order: -1
 ---
 
