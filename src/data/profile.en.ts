@@ -40,6 +40,7 @@ export const experience: Job[] = [
       'Co-founded the studio and built its website from scratch: visual identity, copy, and code using Next.js 16, TypeScript, and Tailwind',
       'Launched the landing page in Portuguese and English, with light and dark themes and contrast adjusted to meet WCAG AA',
       'Set up the infrastructure: Vercel deployment, custom DNS and email, and a wildcard subdomain with a certificate for individual client previews',
+      'Built the website for the first client, Quero Açaí, from the Penpot layout; it is published as a preview',
     ],
   },
   {
@@ -48,8 +49,8 @@ export const experience: Job[] = [
     title: 'Founder and Developer (Data and Product)',
     place: 'remote',
     points: [
-      'Designed the PostgreSQL database (12+ tables) and the API integrations that power the platform',
-      'Implemented MercadoPago payments, GPS tracking for driving lessons, and facial verification with TensorFlow.js',
+      'Designed the PostgreSQL database (about 20 tables) and the API integrations that power the platform',
+      'Implemented MercadoPago payments held until the lesson, live GPS for driving lessons, and instructor background checks',
     ],
   },
   {

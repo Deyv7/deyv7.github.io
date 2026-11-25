@@ -33,7 +33,7 @@ export const nav = [
 export const highlights = [
   { value: '603', label: 'desligamentos analisados', source: 'Case NovaCasa', href: '/projetos/novacasa-people-analytics/' },
   { value: '48%', label: 'das saídas em até 90 dias', source: 'Case NovaCasa', href: '/projetos/novacasa-people-analytics/' },
-  { value: '12+', label: 'tabelas modeladas em PostgreSQL', source: 'E-Habilita', href: '/projetos/e-habilita/' },
+  { value: '~20', label: 'tabelas modeladas em PostgreSQL', source: 'E-Habilita', href: '/projetos/e-habilita/' },
   { value: '73', label: 'testes automatizados no CI', source: 'E-Habilita', href: '/projetos/e-habilita/' },
 ];
 
@@ -56,7 +56,8 @@ export const experience: Job[] = [
     points: [
       'Co-fundei o estúdio e construí o site institucional do zero: identidade, textos e código em Next.js 16, TypeScript e Tailwind',
       'Publiquei a landing em português e inglês, com tema claro e escuro e o contraste ajustado ao padrão WCAG AA',
-      'Montei a infraestrutura: deploy na Vercel, DNS e e-mail próprios, e subdomínio curinga com certificado para enviar uma prévia por cliente',
+      'Montei a infraestrutura: deploy na Vercel, DNS e e-mail próprios, e subdomínio curinga com certificado para enviar uma prévia a cada cliente em potencial',
+      'Fiz o site do primeiro cliente, a Quero Açaí, a partir do layout no Penpot; está publicado em prévia',
     ],
   },
   {
@@ -66,8 +67,8 @@ export const experience: Job[] = [
     place: 'remoto',
     href: '/projetos/e-habilita/',
     points: [
-      'Modelei o banco PostgreSQL (12+ tabelas) e as integrações de API que sustentam a plataforma',
-      'Implementei pagamentos com MercadoPago, rastreamento GPS das aulas e verificação facial com TensorFlow.js',
+      'Modelei o banco PostgreSQL (cerca de 20 tabelas) e as integrações de API que sustentam a plataforma',
+      'Implementei o pagamento com Mercado Pago guardado até a aula, o GPS ao vivo das aulas e a checagem de antecedentes do instrutor',
     ],
   },
   {
